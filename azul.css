@@ -1,0 +1,222 @@
+div {
+/* background: rgb(0, 100, 0, 0.2); */
+}
+
+body {
+  font-size: 24px;
+  font-family: amarante;
+  color: rgba(0, 54, 134);
+  background: rgb(240, 239, 232);
+
+}
+
+.picked-rows-mosaic-container {
+  display: flex;
+  padding: .5em;
+}
+
+.players-area {
+  display: flex;
+}
+
+.player-playmat-container {
+  padding: .5em;
+  border: outset 6px rgb(31, 84, 153);
+}
+
+.player-is-active {
+  box-shadow: inset 0px 0px 30px 10px rgba(0, 118, 0, 0.5);
+}
+
+.neg-point-container {
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em 2em 2em 2em;
+  gap: .2em;
+  padding: .5em;
+  padding-left: 1em;
+  height: 2em;
+}
+
+.picked-rows-container, .mosaic {
+  display: flex;
+  flex-direction: column;
+  padding: .5em;
+  row-gap: .2em;
+}
+
+.picked-rows-container {
+  margin-right: .9em;
+}
+
+.picked-tile-row {
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em 2em;
+  gap: 0.2em;
+  height: 2em;
+  cursor: pointer;
+}
+
+.mosaic-tile {
+    outline: 2px solid rgb(0, 0, 0);
+}
+
+.mosaic-row {
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em 2em;
+  height: 2em;
+  gap: 0.2em
+}
+
+.mosaic-tile-is-filled-false {
+  outline: 1px solid black;
+  opacity: 0.3;
+
+}
+
+.picked-tile-row {
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em 2em;
+}
+
+.picked-tile {
+  outline: 1px solid black;
+}
+
+.workshop-container {
+  display: flex;
+  padding: 0.5em;
+}
+
+.workshop-image-container {
+}
+
+.workshop {
+  display: grid;
+  grid-template-columns: 2em 2em; gap: .2em;
+  padding: 1em;
+  border-radius: 50%;
+  object-fit: contain;
+  margin-right: 1em;
+  outline: rgba(0, 54, 134, 0.414) solid 3px;
+  box-shadow: 0px 0px 15px 5px rgb(100, 58, 26);
+}
+
+.workshop-tile {
+  outline: white 5px solid;
+}
+
+.workshop-image {
+  position: absolute;
+  height: 6.2em;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.center-table-container {
+  display: grid;
+  padding: 0.5em;
+  grid-template-columns: 2em 2em 2em 2em;
+  gap: 0.2em;
+  margin-right: 0.5em;
+}
+
+.workshop-tile, .center-table-tile, .player-tile {
+  outline: 1px solid black;
+  height: 2em;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.table-center-player-tiles-container {
+  display: flex;
+}
+
+.table-picked-header-container {
+  display: flex;
+  width: 444px;
+  justify-content:space-between;
+}
+
+.player-tiles {
+  display: grid;
+  grid-template-columns: 2em 2em 2em 2em;
+  gap: 0.2em;
+  padding: .5em;
+  height: 50;
+}
+
+.player-scores {
+  display: flex;
+  padding: 10px;
+}
+
+.player-score-this-round-container, .player-total-score-container {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.player-score-this-round, .player-total-score {
+  font-weight: 900;
+}
+
+.tile {
+  object-fit: contain;
+  overflow: hidden;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.5);}
+
+.tile-image {
+  height: 2em;
+ /* box-shadow: inset 5px 5px 5px rgba(255, 255, 255, 0.5); */
+}
+
+.tile-red {
+  background-color: rgb(200, 55, 55);
+  border-radius: 6px;
+}
+
+.tile-white {
+  background-color: lightgray;
+  border-radius: 6px;
+}
+
+.tile-black {
+  background-color: rgb(37, 37, 37);
+  border-radius: 6px;
+}
+
+.tile-yellow {
+  background-color: rgb(253, 211, 0);
+  border-radius: 6px;
+}
+
+.tile-blue {
+  background-color: rgb(71, 71, 255);
+  border-radius: 6px;
+}
+
+.tile-is-same-color {
+  filter: brightness(130%);
+  outline: green 3px solid;
+}
+
+.tile-first-player {
+  background: rgb(88, 213, 255);
+  border-radius: 6px;
+}
+
+.tile-undefined, .tile-blank {
+  background-color: rgba(255, 255, 255, 0.3);
+  outline: 0px solid rgba(255, 255, 255, 0.7); 
+  border-radius: 6px;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.5);
+}  
+
+
+
+
+
+
+
+
