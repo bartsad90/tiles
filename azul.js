@@ -198,7 +198,8 @@ document.querySelector('.js-new-round-button').
 addEventListener('click', () => {
   if (isFinalRound) {
     countFinalScores(playerData);
-    determineWinner(playerCount, playerData);
+    winner = determineWinner(playerCount, playerData);
+    highlightWinner(winner);
   } else {
 
   console.log('New round started', playerData);
@@ -621,4 +622,7 @@ function determineWinner(playerCount, playerData) {
   return winner;
 }
 
-function renderFinalScore() {}
+function highlightWinner(winner) {
+  document.querySelector(`.player${winner}-playmat-container`).classList.add('player-is-winner')
+}
+
