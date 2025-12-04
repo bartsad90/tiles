@@ -198,9 +198,11 @@ document.querySelector('.js-new-round-button').
 addEventListener('click', () => {
   if (isFinalRound) {
     countFinalScores(playerData);
+    renderFinalScores(playerCount, playerData);
     winner = determineWinner(playerCount, playerData);
     highlightWinner(winner);
-  } else {
+  } 
+  else {
 
   console.log('New round started', playerData);
 
@@ -626,3 +628,27 @@ function highlightWinner(winner) {
   document.querySelector(`.player${winner}-playmat-container`).classList.add('player-is-winner')
 }
 
+function renderFinalScores(playerCount, playerData) {
+  for (let player = 0; player < playerCount; player++) {
+    document.querySelector(`.player${player}-total-score`).innerHTML = playerData[player][4].playerPoints;
+    document.querySelector(`.js-player${player}-bonus-score-container`).innerHTML = 
+     `<p>Bonus points: </p>
+      <div class="player${player}-bonus-score">
+      <p>Complete rows: ${playerData[player][5].rows.length} x 2pts = ${playerData[player][5].rows.length*2} pts</p>
+      <p>Complete columns: ${playerData[player][5].columns.length} x 7pts = ${playerData[player][5].columns.length*7} pts</p>
+      <p>Complete colors: ${playerData[player][5].colors.length} x 10pts = ${playerData[player][5].colors.length*10} pts</p>`
+  }
+}
+
+/*
+function renderPlayerScore(pointsInRound, playerPoints, negPoints, activePlayer) { 
+  console.log('Rendering scores for player: ', activePlayer, ';', pointsInRound, playerPoints, negPoints, activePlayer);
+  document.querySelector(`.player${activePlayer}-total-score`).innerHTML = playerPoints;
+  document.querySelector(`.player${activePlayer}-score-this-round`).innerHTML = `${pointsInRound}, penalty: ${negPoints}`;
+  document.querySelector(`.js-player${activePlayer}-bonus-score-container`).innerHTML = 
+     `<p>Bonus points: </p>
+      <div class="player${activePlayer}-bonus-score">
+      <p>Complete rows: ${playerData[activePlayer][5].rows.length} x 2pts</p>
+      <p>Complete columns: ${playerData[activePlayer][5].columns.length} x 7pts</p>
+      <p>Complete colors: ${playerData[activePlayer][5].colors.length} x 10pts</p>`
+} */
