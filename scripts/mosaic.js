@@ -28,7 +28,6 @@ export function renderMosaicGrid(playerData, activePlayer) {
     player${activePlayer}-mosaic-row 
     player${activePlayer}-js-mosaic-row-${i}
     ">`
-    console.log('playerData: ', playerData);
     mosaicArray[i].forEach((element) => {
       let tileIndex = 0;
       innerHTML += `<div class="

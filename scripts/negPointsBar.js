@@ -18,14 +18,12 @@ playerData[activePlayer][1].negPointTiles.forEach((tile) => {
 }
 
 export function generateBlankNegPointTiles(negPointTiles) {
-
+  console.log('generateBlankNegPointTiles(negPointTiles')
   for (let i=0; i<7; i++) {
     const negPointTile = {
       id: `neg${i}`,
       tileColor: 'blank'
     }
-
-    console.log('negPointTiles: ', negPointTiles);
     negPointTiles.negPointTiles.push(negPointTile);
   }
 };

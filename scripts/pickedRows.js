@@ -26,7 +26,7 @@ export function putTilesIntoPickedRowsArray(pickedTiles, rowNumber, activePlayer
         }
       })
 
-    //outcome === -1: prevents full rows from taking more tiles
+    //segregateTileOutcome === -1: prevents full rows from taking more tiles
 
     if (playerData[activePlayer][0].pickedRows[rowNumber][rowNumber].tileColor !== 'blank') {      //
       let firstBlankPos = 0;
@@ -185,24 +185,13 @@ export function renderPickedRows(pickedTiles, rowNumber, activePlayer, playerDat
 //generates an array of blank tiles for rendering in pickedRows
 export function generateBlankPickedRows(playerCount, playerData) {
   for(let player = 0; player < playerCount; player++) {
-
-    console.log(`starting: generateBlankPickedRows(playerCount = ${playerCount}, playerData)`, 
-      `pickedRows slice: `, 
-      playerData[player][0].pickedRows.slice(), 
-      'player: ', player, 
-      'playerData: ', playerData, 
-      `playerData[${player}]: `, playerData[player], 
-      `playerData[${player}].pickedRows: `, playerData[player][0].pickedRows[0].slice().length
-    );
-
-
     playerData[player][0].pickedRows.forEach((row) => {
     for(let j=0; j<5; j++) {
         row.push({id: 'defaultBlank', tileColor: 'blank'});
-        console.log(`blank tile pushed`)
    }
-})
-}
+  })
+  console.log(`blank tiles pushed into player ${player} pickedRows. playerData[player][0].pickedrows: `, playerData[player][0].pickedRows)
+  } 
 };
 
 export function checkPickedRowsStatus (activePlayer, playerData) {
