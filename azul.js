@@ -6,9 +6,10 @@ import { renderPickedRows, findFirstBlank, generateBlankPickedRows, putTilesInto
 import { renderNegPointBar, generateBlankNegPointTiles, countNegPoints } from './scripts/negPointsBar.js';
 
 let activePlayer = 0;
-export const playerCount = 3;
+export const playerCount = 2;
 export const workshopCount = playerCount * 2 + 1;
 let hasFirstTile;
+let winner;
 
 let playerPoints = 0;
 let playerPoints1 = 0;
@@ -206,16 +207,28 @@ addEventListener('click', () => {
   console.log('Total points: ', playerData[activePlayer][4].playerPoints);
   renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
   renderPlayerScore(pointsInRound, playerData[activePlayer][4].playerPoints, negPoints, activePlayer, playerData);
-  checkIfFinalRound(activePlayer, playerData, isFinalRound);
+  isFinalRound = checkIfFinalRound(activePlayer, playerData, isFinalRound);
+
+  if (isFinalRound) {
+    document.querySelector('.js-new-round-button')
+    .innerHTML = 'Count final scores'
+  }
+
   countFilledRows(activePlayer, playerData);
   countCompleteColors(activePlayer, tileColorClasses, playerData);
   console.log(`Round ended for player: ${activePlayer}`);
   activePlayer = switchActivePlayer(activePlayer, playerCount);
-  highlightActivePlayerMat(activePlayer)
+  highlightActivePlayerMat(activePlayer);
 });
 
 document.querySelector('.js-new-round-button').
 addEventListener('click', () => {
+  if (isFinalRound) {
+    countFinalScores(playerData);
+    winner = determineWinner(playerCount, playerData);
+    highlightWinner(winner);
+  } else {
+
   console.log('New round started', playerData);
 
   workshopArray.forEach((row) => {
@@ -255,6 +268,8 @@ addEventListener('click', () => {
   console.log('hasFirstTile: ', hasFirstTile)
   renderActivePlayer(activePlayer);
   highlightActivePlayerMat(activePlayer);
+  console.log('activePlayer: ',activePlayer)
+  } 
 });
 
 document.querySelector('.js-end-turn').
@@ -635,3 +650,52 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
     document.querySelector(`.js-player${activePlayer}-picked-tile-row-${rowNum}`).classList.add('is-possible-row')
   })
 }
+  function displayMessage(message) {
+    document.querySelector('.js-message-panel').innerHTML = `${message}`
+  }
+
+  function countFinalScores(playerData) {
+    playerData.forEach((player) => {
+      const scoreRows = player[5].rows.length * 2;
+      const scoreColumns = player[5].columns.length * 7;
+      const scoreColors = player[5].colors.length * 10;
+      console.log(`player ${playerData.indexOf(player)} scoreRows, scoreColumns, scoreColors: `, scoreRows, scoreColumns, scoreColors);
+      console.log(scoreRows);
+      console.log(scoreColumns);
+      console.log(scoreColors);
+      console.log(`bonus points total: `, scoreRows + scoreColumns + scoreColors);
+      console.log('player[4].playerPoints: ', player[4].playerPoints);
+      console.log('player[4].playerPoints + scoreColumns: ', player[4].playerPoints + scoreColumns);
+      console.log('player[4].playerPoints + bonus points: ', player[4].playerPoints + scoreRows + scoreColumns + scoreColors);
+      
+      player[4].playerPoints = player[4].playerPoints + scoreRows + scoreColumns + scoreColors;
+      console.log('player[4].playerPoints after counting: ', player[4].playerPoints)
+
+      console.log(`Player ${playerData.indexOf(player)} final score: ${player[4].playerPoints}`)
+    })
+  }
+
+
+function determineWinner(playerCount, playerData) {
+  console.log('determineWinner')
+  let winner = 0;
+  let highestScore = playerData[0][4].playerPoints;
+  let contenderScore;
+  for (let player = 1; player < playerCount; player++) 
+    //starts at one in order to skip the iteration for the default winner: player 0
+    { 
+    console.log(`Comparing player ${player} to current winner: player ${winner}. contenderScore: `, contenderScore);
+    contenderScore = playerData[player][4].playerPoints;
+    if (contenderScore > highestScore) {
+      highestScore = contenderScore;
+      winner = player;
+    }
+  }
+  displayMessage(`Player ${winner} wins with score: ${highestScore}`);
+  return winner;
+}
+
+function highlightWinner(winner) {
+  document.querySelector(`.player${winner}-playmat-container`).classList.add('player-is-winner')
+}
+
