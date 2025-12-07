@@ -49,7 +49,6 @@ for (let i = 0; i <= 99; i++) {
       tileBag.push(tile);
   }
 
-
 console.log('New tile bag created');
 }
 
@@ -103,14 +102,9 @@ export function pickTileFromBag(workshopCount) {
         }
       }
     }
-    console.log('currentWorkshop: ', currentWorkshop);
-    console.log('Current workshop slice: ', workshopArray[currentWorkshop].slice());
-    console.log('tileBag status: ', tileBag.slice());
   }
-
   else {
     console.log('random tile: ', tileBag[randomNum]);
-    console.log(`Tile bag status: `, tileBag.slice());
   }
 };
 

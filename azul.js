@@ -31,6 +31,35 @@ const tileColorClasses = [
     'white'
 ]
 
+
+//TODO: write a constructor for playerData subarrays/objects
+//TODO: rewrite playerData as an object
+//TODO: rewrite functions w/ playerData as a param to access playerDataSets without array indeces  
+
+//* For future reference: 
+//* playerData[activePlayer][0] === pickedRows:
+//    stores tiles picked by the player during a contemporary round 
+//    in order to create pickedRowsStatus and resolve the round
+//* playerData[activePlayer][1] === negPointTiles:
+//    stores extraneous picked tiles which later convert into negative points
+//* playerData[activePlayer][2] === mosaicArray:
+//    stores the state of the mosaic for comparison with pickedRowsStatus
+//    and to determine playerPoints
+//* playerData[activePlayer][3] === pickedRowsStatus:
+//    is an array booleans, where the index represents a pickedRow.
+//    True describes a complete pickedRow ready for transfer into the mosaic and the discardBox 
+//    False denotes an incomplete pickedRow, where tiles remain for the next round
+//    For example:  
+//    `pickedRowsStatus[0] === true` 
+//    describes the first picked row as full 
+//* playerData[activePlayer][4] === playerPoints:
+//    updates for the active player with the 'end round' button
+//    and at the end of the game when bonusPoints are counted
+//* playerData[activePlayer][5] === bonusPoints:
+//    stores information on how many times the player has met conditions for bonusPoints. 
+//    The points are counted and added before determining the winningPlayer 
+//    to maintain score clarity.
+
 let pickedRow0 = [];
 let pickedRow1 = [];
 let pickedRow2 = [];
@@ -173,10 +202,8 @@ addEventListener('click', () => {
   renderMosaicGrid(playerData, activePlayer);
   negPoints = countNegPoints(playerData, activePlayer);
   playerData[activePlayer][4].playerPoints += pointsInRound + negPoints;
-  console.log(pointsInRound);
-  console.log(negPoints);
   console.log(`Points this round: ${pointsInRound}`);
-  console.log('Negative points this rounds: ', negPoints)
+  console.log('Negative points this round: ', negPoints)
   console.log('Total points: ', playerData[activePlayer][4].playerPoints);
   renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
   renderPlayerScore(pointsInRound, playerData[activePlayer][4].playerPoints, negPoints, activePlayer, playerData);
@@ -211,15 +238,13 @@ addEventListener('click', () => {
     row.splice(0, row.length);
   })
   fillWorkshops(workshopCount);
-  renderWorkshops(pickedTiles, centerTable);
+  renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
   renderActivePlayer(activePlayer);
   activePlayer = chooseFirstPlayer(isFinalRound, playerData);
 
-
-
   for (let player = 0; player < playerCount; player++) {
     //let playerDataSet = playerData[player];
-    console.log('Clearing player matt for player: ', player);
+    console.log('Clearing player mat for player: ', player);
     discardFullPickedRows(discardBox, player, playerData);
     moveNegPointsTilesToDiscard(player, playerData);
     renderNegPointBar(playerData, player);
@@ -250,9 +275,14 @@ addEventListener('click', () => {
 document.querySelector('.js-end-turn').
 addEventListener('click', () => {
 activePlayer = switchActivePlayer(activePlayer, playerCount);
-console.log(activePlayer);
 displayMessage(`New turn: player ${activePlayer}`);
 })
+
+document.querySelector('.js-show-possible').addEventListener('click', () => {
+  console.log('Show possible choices for activePlayer: ', activePlayer);
+  highlightPossibleRows(pickedTiles, activePlayer, playerData);
+})
+
 
 let discardBox = [];
 
@@ -279,21 +309,15 @@ createWorkshopNumber(workshopCount);
 
 fillWorkshops(workshopCount);
 
-renderWorkshops(pickedTiles, centerTable);
-
 renderCenterTable(centerTable, pickedTiles);
 
-console.log('Mosaic array: ', mosaicArray)
-
 generateBlankPickedRows(playerCount, playerData);
-
-let pickedColor = 'blank'
 
 let rowNumber = 0;
 
 generatePlayerMatts(playerCount);
 
-//generateBlankNegPointTiles() creates 7 blank tiles and pushes them into the array. To avoid generating n7 tiles, it is called only once outside the loop.
+// generateBlankNegPointTiles() creates 7 blank tiles and pushes them into the array. To avoid generating n7 tiles, it is called only once outside the loop.
 playerData.forEach((playerDataSet) => {
   generateBlankNegPointTiles(playerDataSet[1]);   //playerData[1] === negPointTiles 
   generateNewMosaicArray(newMosaicTemplate, playerDataSet[2].mosaicArray);
@@ -312,6 +336,10 @@ renderPlayerScore(pointsInRound, playerPoints, negPoints, activePlayer);
 }
 
 activePlayer = 0;
+renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
+
+
+
 
 renderActivePlayer(activePlayer);
 
@@ -403,18 +431,11 @@ export function renderCenterTable(centerTable, pickedTiles) {
           if (firstPlayerPicked === true) {
             console.log('moving first tile to picked tiles.', centerTable[0])
             pickedTiles.push(centerTable[0]);
-            indecesToDelete.splice(0, 0, 0) //enters 0 at index 0 of the array to prevent later array.reverse fromr eindexing
+            indecesToDelete.splice(0, 0, 0) //enters 0 at index 0 of the array to prevent later array.reverse from reindexing
             firstPlayerPicked = false;
           }
 
           renderPickedTiles(pickedTiles);
-
-          console.log('PickedTiles: ');
-          console.log(pickedTiles);
-
-
-          console.log('CenterTable: ');
-          console.log(centerTable);
         }  
       })
       console.log('indecesToDelete', indecesToDelete)
@@ -427,7 +448,7 @@ export function renderCenterTable(centerTable, pickedTiles) {
   })
 
 
-  //adds listeners for mousover effects
+  //adds listeners for mouseover effects
   allTileColors.forEach((color) => {
     
       document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => {
@@ -570,16 +591,66 @@ function chooseFirstPlayer(isFInalRound, playerData) {
         if (tile.tileColor === 'first-player' && !isFInalRound) {
           firstNextRound = playerData.indexOf(playerDataSet);
           console.log(`Player ${firstNextRound} has the first player tile and begins the next round.`)
-          console.log('firstNextRound: ', firstNextRound);
         }
       })
      })
     return firstNextRound;
   }
 
-  function displayMessage(message) {
-    document.querySelector('.js-message-panel').innerHTML = `${message}`
+function displayMessage(message) {
+  document.querySelector('.js-message-panel').innerHTML = `${message}`
+}
+
+export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
+
+//TODO: make the function get activePlayer other than === 0;
+// After creating a new round and determining the first player,
+// activePlayer changes correctly, but remains unchanged until the end of the round.
+//? Is the button programmed while rendering and therefore is only programmed
+//? when rendered? => posible solution: rerender the button after each turn resolves?
+
+  let possibleRowsArray = [];
+  (console.log``)
+  if (possibleRowsArray.length > 0) {
+    possibleRowsArray.splice(0, possibleRowsArray.length)
   }
+  let pickedTilesColor;
+  pickedTiles.forEach((tile) => {
+    if (tile.tileColor !== 'first-player') {
+      pickedTilesColor = tile.tileColor;
+    }
+  })
+
+  console.log('highlightPossibleRows. playerData[activePlayer]: ', playerData, 'activePlayer: ', activePlayer)
+
+  playerData[activePlayer][0].pickedRows.forEach((row) => {
+    if (pickedTiles === undefined || pickedTiles.length === 0) {
+      console.log('No picked tiles')
+      return
+    }
+    
+    if (row[0].tileColor === 'blank' && row[0].tileColor !== pickedTilesColor) 
+      //TODO: add two additional conditions: full row and mosaic tile occupied
+    {
+    possibleRowsArray.push(playerData[activePlayer][0].pickedRows.indexOf(row))
+
+    console.log(`Row ${playerData[activePlayer][0].pickedRows.indexOf(row)} empty or containing color ${pickedTilesColor}, row[0].tileColor: `, row[0].tileColor);
+    
+    console.log("row[0].tileColor !== 'blank': ", row[0].tileColor !== 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor)
+  } 
+  else {
+    console.log("row[0].tileColor !== 'blank': ", row[0].tileColor !== 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor)
+
+  }
+})
+
+  console.log('possibleRowsArray: ', possibleRowsArray)
+
+  possibleRowsArray.forEach((rowNum) => {
+    document.querySelector(`.js-player${activePlayer}-picked-tile-row-${rowNum}`).classList.add('is-possible-row')
+  })
+}
+
 
   function countFinalScores(playerData) {
     playerData.forEach((player) => {

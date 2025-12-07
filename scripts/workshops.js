@@ -1,4 +1,4 @@
-import { pickedTiles, playerCount, workshopCount, renderCenterTable} from '/../azul.js';
+import { pickedTiles, playerCount, workshopCount, renderCenterTable, highlightPossibleRows} from '/../azul.js';
 import { pickTileFromBag, tileBag, allTileColors } from './tileBag.js';
 import { renderPickedTiles } from './pickedTiles.js';
 
@@ -34,7 +34,9 @@ export function moveWorkshopsToDiscard () {
   console.log(`workshops clear`, workshopArray);
 }
 
-export function renderWorkshops(pickedTiles, centerTable) {
+export function renderWorkshops(pickedTiles, centerTable, activePlayer, playerData) {
+  console.log('renderWorkshops. playerData', playerData, 'activePlayer', activePlayer);
+  
   let workshopInnerHTML = ``;
 
   workshopArray.forEach((workshop) => {
@@ -64,10 +66,10 @@ export function renderWorkshops(pickedTiles, centerTable) {
 
   document.querySelector('.js-workshop-container').innerHTML = workshopInnerHTML;
 
-
   addWorkshopsMouseoverEffects();
 
-  addEventListenerWorkshop(pickedTiles, centerTable);
+  addEventListenerWorkshop(pickedTiles, centerTable, activePlayer, playerData);
+  console.log('test, activePlayer: activePlayer: ', activePlayer);
 }
 
 function addWorkshopsMouseoverEffects () {
@@ -94,7 +96,8 @@ function addWorkshopsMouseoverEffects () {
   })
 }
 
-function addEventListenerWorkshop(pickedTiles, centerTable){
+export function addEventListenerWorkshop(pickedTiles, centerTable, activePlayer, playerData){
+  console.log('addEventListenerWorkshop. activePlayer: ', activePlayer);
   document.querySelectorAll('.js-tile').forEach((tile) => {
     tile.addEventListener('click', () => {
       if (tile.classList.contains('tile-black')) {
@@ -109,50 +112,49 @@ function addEventListenerWorkshop(pickedTiles, centerTable){
         selectedColor = 'blue'
       }
 
-for (let i = 0; i < 9; i++) {
-  if (tile.classList.contains(`tile-in-workshop-${i}`)) {
-        workshopNum = i;
-      }
-    } 
+  for (let i = 0; i < 9; i++) {
+    if (tile.classList.contains(`tile-in-workshop-${i}`)) {
+          workshopNum = i;
+        }
+      } 
 
-      //stores picked and discarded tiles after click
-      const clickedWorkshop = selectTilesFromWorkshop(selectedColor, workshopNum);
-      console.log(`selectedColor: ${selectedColor}
-        from workshop: ${workshopNum}
-        number of tiles: ${clickedWorkshop[0].length}`);
-      /*
-      pushTilesFromTo(clickedWorkshop[1], centerTable);
+        //stores picked and discarded tiles after click
+        const clickedWorkshop = selectTilesFromWorkshop(selectedColor, workshopNum);
+        console.log(`selectedColor: ${selectedColor}
+          from workshop: ${workshopNum}
+          number of tiles: ${clickedWorkshop[0].length}`);
+        /*
+        pushTilesFromTo(clickedWorkshop[1], centerTable);
 
-      console.log('pickedTiles error?: ', pickedTiles);
-      pushTilesFromTo(clickedWorkshop[0], pickedTiles);
-      */
+        console.log('pickedTiles error?: ', pickedTiles);
+        pushTilesFromTo(clickedWorkshop[0], pickedTiles);
+        */
 
 
-        clickedWorkshop[1].forEach((tile) => {
-          console.log(centerTable);
-        centerTable.push(tile)
+          clickedWorkshop[1].forEach((tile) => {
+          centerTable.push(tile)
+        })
+
+        clickedWorkshop[0].forEach((tile) => {
+          pickedTiles.push(tile)
+        })
+
+        console.log('Discarded tiles:'); 
+        
+        centerTable.forEach((tile) =>
+        console.log(tile))
+        console.log('Picked tiles:');
+        pickedTiles.forEach((tile) => 
+        console.log(tile))
+
+        workshopArray[workshopNum].splice(0, 4, 'blank', 'blank', 'blank', 'blank');
+        console.log(`Workshop ${workshopNum}`, workshopArray[workshopNum]);
+        console.log('pickedTiles: ', pickedTiles);
+        renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
+        renderCenterTable(centerTable, pickedTiles);
+        renderPickedTiles(pickedTiles);
       })
-
-      clickedWorkshop[0].forEach((tile) => {
-        pickedTiles.push(tile)
-      })
-
-      console.log('Discarded tiles:'); 
-      
-      centerTable.forEach((tile) =>
-      console.log(tile))
-      console.log('Picked tiles:');
-      pickedTiles.forEach((tile) => 
-      console.log(tile))
-
-      workshopArray[workshopNum].splice(0, 4, 'blank', 'blank', 'blank', 'blank');
-      console.log(`Workshop ${workshopNum}`, workshopArray[workshopNum]);
-      console.log('Picked tiles array: ', pickedTiles);
-      renderWorkshops(pickedTiles, centerTable);
-      renderCenterTable(centerTable, pickedTiles);
-      renderPickedTiles(pickedTiles);
     })
-  })
   }
 
 function pushTilesFromTo(from, to) {
@@ -173,6 +175,5 @@ function selectTilesFromWorkshop(selectedColor, workshopNum) {
       }
     })
     clickedWorkshop.push(selectedTiles, unselectedTiles); //the array stores selected tiles at index 0, tiles for discard at index 1
-    console.log(clickedWorkshop);
     return clickedWorkshop;
   }
