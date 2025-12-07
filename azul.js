@@ -650,9 +650,7 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
     document.querySelector(`.js-player${activePlayer}-picked-tile-row-${rowNum}`).classList.add('is-possible-row')
   })
 }
-  function displayMessage(message) {
-    document.querySelector('.js-message-panel').innerHTML = `${message}`
-  }
+
 
   function countFinalScores(playerData) {
     playerData.forEach((player) => {
