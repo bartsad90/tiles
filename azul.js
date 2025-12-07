@@ -193,6 +193,7 @@ let playerData = [
   player4Data
 ];
 
+
 document.querySelector('.js-end-round-button').
 addEventListener('click', () => {
   console.log(`Round end, activePlayer: ${activePlayer}`)
@@ -220,6 +221,11 @@ addEventListener('click', () => {
   activePlayer = switchActivePlayer(activePlayer, playerCount);
   highlightActivePlayerMat(activePlayer);
 });
+
+
+//* To make sure that there is no error when starting a new round:
+//    - all players must have made at least one full move
+//    - one of the players must have picked the first-player tile
 
 document.querySelector('.js-new-round-button').
 addEventListener('click', () => {
@@ -650,7 +656,6 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
     document.querySelector(`.js-player${activePlayer}-picked-tile-row-${rowNum}`).classList.add('is-possible-row')
   })
 }
-
 
   function countFinalScores(playerData) {
     playerData.forEach((player) => {
