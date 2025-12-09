@@ -275,6 +275,7 @@ addEventListener('click', () => {
   renderActivePlayer(activePlayer);
   highlightActivePlayerMat(activePlayer);
   console.log('activePlayer: ',activePlayer)
+  renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData);
   } 
 });
 
