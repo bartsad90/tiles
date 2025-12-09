@@ -1,4 +1,4 @@
-import { switchActivePlayer, playerCount} from '../azul.js'
+import { switchActivePlayer, playerCount, renderShowPossibleRowsButton} from '../azul.js'
 import { renderPickedTiles } from './pickedTiles.js';
 import { renderNegPointBar } from './negPointsBar.js';
 
@@ -175,6 +175,7 @@ export function renderPickedRows(pickedTiles, rowNumber, activePlayer, playerDat
       
       if (isActionComplete) {
       activePlayer = switchActivePlayer(activePlayer, playerCount);
+      renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData);
       }
       rowNumber = 0;
       

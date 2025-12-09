@@ -1,6 +1,7 @@
 import { pickedTiles, playerCount, workshopCount, renderCenterTable, highlightPossibleRows} from '/../azul.js';
 import { pickTileFromBag, tileBag, allTileColors } from './tileBag.js';
 import { renderPickedTiles } from './pickedTiles.js';
+import { renderShowPossibleRowsButton } from '../azul.js';
 
 
 let selectedColor;

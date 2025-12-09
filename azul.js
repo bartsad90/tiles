@@ -6,7 +6,7 @@ import { renderPickedRows, findFirstBlank, generateBlankPickedRows, putTilesInto
 import { renderNegPointBar, generateBlankNegPointTiles, countNegPoints } from './scripts/negPointsBar.js';
 
 let activePlayer = 0;
-export const playerCount = 2;
+export const playerCount = 3;
 export const workshopCount = playerCount * 2 + 1;
 let hasFirstTile;
 let winner;
@@ -284,12 +284,6 @@ activePlayer = switchActivePlayer(activePlayer, playerCount);
 displayMessage(`New turn: player ${activePlayer}`);
 })
 
-document.querySelector('.js-show-possible').addEventListener('click', () => {
-  console.log('Show possible choices for activePlayer: ', activePlayer);
-  highlightPossibleRows(pickedTiles, activePlayer, playerData);
-})
-
-
 let discardBox = [];
 
 let newMosaicTemplate = [
@@ -344,12 +338,11 @@ renderPlayerScore(pointsInRound, playerPoints, negPoints, activePlayer);
 activePlayer = 0;
 renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
 
-
-
-
 renderActivePlayer(activePlayer);
 
 highlightActivePlayerMat(activePlayer);
+
+renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData);
 
 export function refillTileBag(outCount) {
   if (outCount === 100) {
@@ -607,13 +600,41 @@ function displayMessage(message) {
   document.querySelector('.js-message-panel').innerHTML = `${message}`
 }
 
+export function renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData) {
+  console.log(`renderShowPossibleRowsButton(pickedTiles, activePlayer, playerData), activePlayer: `, activePlayer);
+  document.querySelector('.js-show-possible').addEventListener('click', () => {
+    highlightPossibleRows(pickedTiles, activePlayer, playerData);
+  })
+
+
+  if (activePlayer === 0) {
+    console.log('removing eventListener from js-show-possible for playerCount-1: ', playerCount-1); 
+    // playerCount has to be decreased by 1 to denote last player, because activePlayer provides index to a 0-indexed array 
+    document.querySelector('.js-show-possible').removeEventListener('click', () => {
+      highlightPossibleRows(pickedTiles, playerCount, playerData);
+    })
+  } else {
+    console.log('removing eventListener from js-show-possible for activePlayer-1: ', activePlayer-1);
+    document.querySelector('.js-show-possible').removeEventListener('click', () => {
+      highlightPossibleRows(pickedTiles, activePlayer-1, playerData);
+  })
+  }
+}
+
 export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
 
-//TODO: make the function get activePlayer other than === 0;
+//// make the function get activePlayer other than === 0; 
+//[x]: remove event listeners for previous players 
+//[x]: unhighlight previous player's possible rows
+//[x]: renderShowPossibleRowsButton at the beginning of the game
+//[]set the correct activePLayer for rendering after starting a new round
 // After creating a new round and determining the first player,
 // activePlayer changes correctly, but remains unchanged until the end of the round.
 //? Is the button programmed while rendering and therefore is only programmed
 //? when rendered? => posible solution: rerender the button after each turn resolves?
+
+  dehighlightPossibleRows();
+  console.log('highlightPossibleRows(pickedTiles, activePlayer, playerData), activePlayer: ', activePlayer);
 
   let possibleRowsArray = [];
   (console.log``)
@@ -657,26 +678,34 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
   })
 }
 
-  function countFinalScores(playerData) {
-    playerData.forEach((player) => {
-      const scoreRows = player[5].rows.length * 2;
-      const scoreColumns = player[5].columns.length * 7;
-      const scoreColors = player[5].colors.length * 10;
-      console.log(`player ${playerData.indexOf(player)} scoreRows, scoreColumns, scoreColors: `, scoreRows, scoreColumns, scoreColors);
-      console.log(scoreRows);
-      console.log(scoreColumns);
-      console.log(scoreColors);
-      console.log(`bonus points total: `, scoreRows + scoreColumns + scoreColors);
-      console.log('player[4].playerPoints: ', player[4].playerPoints);
-      console.log('player[4].playerPoints + scoreColumns: ', player[4].playerPoints + scoreColumns);
-      console.log('player[4].playerPoints + bonus points: ', player[4].playerPoints + scoreRows + scoreColumns + scoreColors);
-      
-      player[4].playerPoints = player[4].playerPoints + scoreRows + scoreColumns + scoreColors;
-      console.log('player[4].playerPoints after counting: ', player[4].playerPoints)
+function dehighlightPossibleRows() {
+  console.log('dehighlightPossibleRows');
+  document.querySelectorAll('.is-possible-row').
+  forEach((row) => {
+    row.classList.remove('is-possible-row')
+  })
+}
 
-      console.log(`Player ${playerData.indexOf(player)} final score: ${player[4].playerPoints}`)
-    })
-  }
+function countFinalScores(playerData) {
+  playerData.forEach((player) => {
+    const scoreRows = player[5].rows.length * 2;
+    const scoreColumns = player[5].columns.length * 7;
+    const scoreColors = player[5].colors.length * 10;
+    console.log(`player ${playerData.indexOf(player)} scoreRows, scoreColumns, scoreColors: `, scoreRows, scoreColumns, scoreColors);
+    console.log(scoreRows);
+    console.log(scoreColumns);
+    console.log(scoreColors);
+    console.log(`bonus points total: `, scoreRows + scoreColumns + scoreColors);
+    console.log('player[4].playerPoints: ', player[4].playerPoints);
+    console.log('player[4].playerPoints + scoreColumns: ', player[4].playerPoints + scoreColumns);
+    console.log('player[4].playerPoints + bonus points: ', player[4].playerPoints + scoreRows + scoreColumns + scoreColors);
+    
+    player[4].playerPoints = player[4].playerPoints + scoreRows + scoreColumns + scoreColors;
+    console.log('player[4].playerPoints after counting: ', player[4].playerPoints)
+
+    console.log(`Player ${playerData.indexOf(player)} final score: ${player[4].playerPoints}`)
+  })
+}
 
 
 function determineWinner(playerCount, playerData) {
