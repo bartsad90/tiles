@@ -6,7 +6,7 @@ import { renderPickedRows, findFirstBlank, generateBlankPickedRows, putTilesInto
 import { renderNegPointBar, generateBlankNegPointTiles, countNegPoints } from './scripts/negPointsBar.js';
 
 let activePlayer = 0;
-export const playerCount = 3;
+export const playerCount = 2;
 export const workshopCount = playerCount * 2 + 1;
 let hasFirstTile;
 let winner;
@@ -624,11 +624,13 @@ export function renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCo
 
 export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
 
-//// make the function get activePlayer other than === 0; 
+//[x] make the function get activePlayer other than === 0; 
 //[x]: remove event listeners for previous players 
 //[x]: unhighlight previous player's possible rows
 //[x]: renderShowPossibleRowsButton at the beginning of the game
-//[]set the correct activePLayer for rendering after starting a new round
+//[x]set the correct activePLayer for rendering after starting a new round
+//[x]: add two additional conditions: full row and mosaic tile occupied
+
 // After creating a new round and determining the first player,
 // activePlayer changes correctly, but remains unchanged until the end of the round.
 //? Is the button programmed while rendering and therefore is only programmed
@@ -652,24 +654,39 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
   console.log('highlightPossibleRows. playerData[activePlayer]: ', playerData, 'activePlayer: ', activePlayer)
 
   playerData[activePlayer][0].pickedRows.forEach((row) => {
+    let rowNum = playerData[activePlayer][0].pickedRows.indexOf(row);
+    let isColorInMosaicRowFilled;
+    
+    playerData[activePlayer][2].mosaicArray[rowNum].
+    forEach((mosaicTile) => {
+      if (mosaicTile.isFilled && mosaicTile.tileColor === pickedTilesColor) { 
+        isColorInMosaicRowFilled = true;
+        return;
+    }})
+
+    console.log('isColorInMosaicRowFilled: ', isColorInMosaicRowFilled);
+    ;
     if (pickedTiles === undefined || pickedTiles.length === 0) {
       console.log('No picked tiles')
       return
     }
-    
-    if (row[0].tileColor === 'blank' && row[0].tileColor !== pickedTilesColor) 
-      //TODO: add two additional conditions: full row and mosaic tile occupied
+    if (row.forEach((tile) => {tile.tileColor !== 'blank'})) {
+      console.log(`Row: ${rowNum}: All tiles in row occupied`)
+    } 
+    else if (isColorInMosaicRowFilled) {
+      console.log('isColorInMosaicRowFilled: ', isColorInMosaicRowFilled);
+    }
+    else if (row[0].tileColor === 'blank' || row[0].tileColor === pickedTilesColor) 
     {
-    possibleRowsArray.push(playerData[activePlayer][0].pickedRows.indexOf(row))
+      possibleRowsArray.push(rowNum)
 
-    console.log(`Row ${playerData[activePlayer][0].pickedRows.indexOf(row)} empty or containing color ${pickedTilesColor}, row[0].tileColor: `, row[0].tileColor);
-    
-    console.log("row[0].tileColor !== 'blank': ", row[0].tileColor !== 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor)
-  } 
-  else {
-    console.log("row[0].tileColor !== 'blank': ", row[0].tileColor !== 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor)
-
-  }
+      console.log(`Row ${rowNum} empty or containing color ${pickedTilesColor}, row[0].tileColor: `, row[0].tileColor);
+      
+      console.log("row.tileColor === 'blank': ", row[0].tileColor === 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor)
+     } 
+    else {
+      console.log(`Row ${rowNum} not possible: row[0].tileColor === 'blank': `, row[0].tileColor === 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor, "row[0].tileColor: ", row[0].tileColor)
+    }
 })
 
   console.log('possibleRowsArray: ', possibleRowsArray)
