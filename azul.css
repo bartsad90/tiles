@@ -1,6 +1,6 @@
 div {
   /** uncomment to see boxes*/
-  /* background: rgb(0, 100, 0, 0.2); */
+  /*background: rgb(0, 100, 0, 0.2);*/
 }
 
 body {
@@ -11,8 +11,10 @@ body {
 }
 
 button {
-  font-size: 24px;
+  font-size: 1em;
   font-family: amarante;
+  height: 4.5em;
+  width: 4.5em;
   color: rgba(0, 54, 134);
   padding: 10px 14px;
   margin-right: 10px;
@@ -31,6 +33,11 @@ button:hover {
   background-color: rgb(233, 242, 255);;
 }
 
+.show-possible-button {
+  font-size: 1em;
+  padding: 0;
+}
+
 .picked-rows-mosaic-container {
   display: flex;
   padding: .5em;
@@ -43,8 +50,8 @@ button:hover {
 .player-playmat-container {
   padding: .5em;
   border: 6px solid rgba(0, 54, 134);
-  outline: 2px solid rgba(0, 54, 134);
-  outline-offset: -8px;
+  outline: 0px solid rgba(0, 54, 134);
+  outline-offset: -12px;
   border-radius: 8px;
   margin-right: 10px;
 
@@ -278,7 +285,6 @@ button:hover {
   outline: 2px solid rgba(0, 54, 134);
   outline-offset: -8px;
   border-radius: 8px;
-  cursor: pointer;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   transition: background-color 0.2s
 }
