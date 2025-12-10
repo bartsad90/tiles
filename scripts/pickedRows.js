@@ -1,4 +1,4 @@
-import { switchActivePlayer, playerCount, renderShowPossibleRowsButton} from '../azul.js'
+import { switchActivePlayer, playerCount, renderShowPossibleRowsButton, displayMessage} from '../azul.js'
 import { renderPickedTiles } from './pickedTiles.js';
 import { renderNegPointBar } from './negPointsBar.js';
 
@@ -37,7 +37,7 @@ export function putTilesIntoPickedRowsArray(pickedTiles, rowNumber, activePlayer
     }  
     else if (colorIsFilledInMosaicRow) 
       {
-      console.log(`A ${t.tileColor} tile already exists in this mosaic row. Pick a different row.`);
+      displayMessage(`Player ${activePlayer}: You already have a ${t.tileColor} tile in this mosaic row. Pick a different row.`);
     }
     else if (
       t.tileColor === 'first-player') 
@@ -64,6 +64,7 @@ export function putTilesIntoPickedRowsArray(pickedTiles, rowNumber, activePlayer
       k++;
       segregateTileOutcome = 1;
       console.log(`option 1, tile transferred: `, t)
+      displayMessage(`Player ${activePlayer}: ${pickedTiles.length} ${t.tileColor} tile(s) added to row ${rowNumber}`);
     }
     else if (!playerData[activePlayer][0].pickedRows[rowNumber]
       .map(e => e.tileColor)
@@ -75,39 +76,34 @@ export function putTilesIntoPickedRowsArray(pickedTiles, rowNumber, activePlayer
       playerData[activePlayer][0].pickedRows[rowNumber].splice(k, 1, t);
       k++;
       console.log(`${pickedTiles.length} ${t.tileColor} tile(s) added to row ${rowNumber}`);
-      console.log(`option 3, tile transferred: `, t)
-
+      displayMessage(`Player ${activePlayer}: ${pickedTiles.length} ${t.tileColor} tile(s) added to row ${rowNumber}`);
       segregateTileOutcome = 3;
     } 
   })
   if (segregateTileOutcome === -1) {
-    console.log(`Too many tiles. Tiles transfered to negPointsBar`)
+    displayMessage(`Player ${activePlayer}: Too many tiles in row ${rowNumber}. Tiles moved to your penalty row.`)
     pickedTiles.splice(0, 5);
     isActionComplete = true;
 
     }
   else if (segregateTileOutcome === 0) {
-    console.log(`Segregate option ${segregateTileOutcome}. You will go first next round.`)
+    displayMessage(`Player ${activePlayer}: You picked the first-player tile. You will go first next round.`)
     pickedTiles.splice(0, 5);
     isActionComplete = true;
 
-
     }
   else if (segregateTileOutcome === 1) {
-    console.log(`${pickedTiles.length} tile(s) added to row ${rowNumber}`);
     pickedTiles.splice(0, 5);
     isActionComplete = true;
 
   }
   else if (segregateTileOutcome === 2) {
-    console.log(`Invalid color, pick an empty row or a row with tiles of the same color as the picked ones`);
+    displayMessage(`Player ${activePlayer}: Invalid color, pick an empty row or a row with tiles of the same color as the picked ones`);
   }
 
   else if (segregateTileOutcome === 3) {
-    console.log(`${pickedTiles.length} tile(s) added to row ${rowNumber}`);
     pickedTiles.splice(0, 5);
     isActionComplete = true;
-
   }
 
   return isActionComplete;
@@ -169,9 +165,9 @@ export function renderPickedRows(pickedTiles, rowNumber, activePlayer, playerDat
       renderNegPointBar(playerData, activePlayer);
       
 
-      console.log(`Picked row ${rowNumber}. Row ${rowNumber} contains:`);console.log(playerData[activePlayer][0].pickedRows[rowNumber]);
-      console.log(`Picked rows ${activePlayer}: `, playerData[activePlayer][0].pickedRows);
-      
+      console.log(`Picked row ${rowNumber}. Row ${rowNumber} contains:`);
+      console.log(playerData[activePlayer][0].pickedRows[rowNumber]);
+      console.log(`Picked rows ${activePlayer}: `, playerData[activePlayer][0].pickedRows);      
       
       if (isActionComplete) {
       activePlayer = switchActivePlayer(activePlayer, playerCount);

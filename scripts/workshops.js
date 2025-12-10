@@ -1,4 +1,4 @@
-import { pickedTiles, playerCount, workshopCount, renderCenterTable, highlightPossibleRows} from '/../azul.js';
+import { pickedTiles, playerCount, workshopCount, renderCenterTable, highlightPossibleRows, dehighlightPossibleRows, displayMessage} from '/../azul.js';
 import { pickTileFromBag, tileBag, allTileColors } from './tileBag.js';
 import { renderPickedTiles } from './pickedTiles.js';
 import { renderShowPossibleRowsButton } from '../azul.js';
@@ -154,15 +154,16 @@ export function addEventListenerWorkshop(pickedTiles, centerTable, activePlayer,
         renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
         renderCenterTable(centerTable, pickedTiles);
         renderPickedTiles(pickedTiles);
+        displayMessage(`Player ${activePlayer}: Click an available row on your player mat to collect the tiles`);
+      
+        //[] Highlight available rows after workshop tiles are clicked
+      
+      //  dehighlightPossibleRows();
+      //  highlightPossibleRows(pickedTiles, activePlayer, playerData);
+
       })
     })
   }
-
-function pushTilesFromTo(from, to) {
-  from.forEach((tile) => {
-    to.push(tile)
-  })
-}
 
 function selectTilesFromWorkshop(selectedColor, workshopNum) {
     let selectedTiles = [];

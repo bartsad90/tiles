@@ -210,16 +210,23 @@ addEventListener('click', () => {
   renderPlayerScore(pointsInRound, playerData[activePlayer][4].playerPoints, negPoints, activePlayer, playerData);
   isFinalRound = checkIfFinalRound(activePlayer, playerData, isFinalRound);
 
-  if (isFinalRound) {
-    document.querySelector('.js-new-round-button')
-    .innerHTML = 'Count final scores'
-  }
-
   countFilledRows(activePlayer, playerData);
   countCompleteColors(activePlayer, tileColorClasses, playerData);
   console.log(`Round ended for player: ${activePlayer}`);
   activePlayer = switchActivePlayer(activePlayer, playerCount);
   highlightActivePlayerMat(activePlayer);
+
+  displayMessage(`Player ${activePlayer}: Points this round: ${pointsInRound}, Negative points this round: ${negPoints},  Total points: ${playerData[activePlayer][4].playerPoints}`)
+
+  if (isFinalRound) {
+    document.querySelector('.js-new-round-button')
+    .innerHTML = 'Count final scores'
+    displayMessage(`Player ${activePlayer}:
+      <br>Points this round: ${pointsInRound}
+      <br> Negative points this round: ${negPoints}
+      <br>  Total points: ${playerData[activePlayer][4].playerPoints}.
+      <br>You have complete a column. This is the <strong>final round</strong>!`)
+  }
 });
 
 
@@ -233,6 +240,11 @@ addEventListener('click', () => {
     countFinalScores(playerData);
     winner = determineWinner(playerCount, playerData);
     highlightWinner(winner);
+
+    displayMessage(`Player ${winner} wins! 
+      <br>Total score of ${playerData[winner][4].playerPoints}.
+      <br><b>Congratulations</b>`)
+
   } else {
 
   console.log('New round started', playerData);
@@ -344,6 +356,8 @@ renderActivePlayer(activePlayer);
 highlightActivePlayerMat(activePlayer);
 
 renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData);
+
+displayMessage(`New game begins. Player ${activePlayer}, pick tiles from workshops`)
 
 export function refillTileBag(outCount) {
   if (outCount === 100) {
@@ -597,7 +611,7 @@ function chooseFirstPlayer(isFInalRound, playerData) {
     return firstNextRound;
   }
 
-function displayMessage(message) {
+export function displayMessage(message) {
   document.querySelector('.js-message-panel').innerHTML = `${message}`
 }
 
@@ -606,7 +620,6 @@ export function renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCo
   document.querySelector('.js-show-possible').addEventListener('click', () => {
     highlightPossibleRows(pickedTiles, activePlayer, playerData);
   })
-
 
   if (activePlayer === 0) {
     console.log('removing eventListener from js-show-possible for playerCount-1: ', playerCount-1); 
@@ -693,7 +706,7 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
   })
 }
 
-function dehighlightPossibleRows() {
+export function dehighlightPossibleRows() {
   console.log('dehighlightPossibleRows');
   document.querySelectorAll('.is-possible-row').
   forEach((row) => {

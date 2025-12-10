@@ -243,11 +243,11 @@ button:hover {
 }
 
 .message-panel {
-  display: flex;
+  display: block;
   justify-content: center;
   align-items: center;
   max-width: 24em;
-  max-height: 4em;
+  min-height: 2em;
   padding: 20px 14px;
   margin-right: 10px;
   margin-bottom: 10px;
