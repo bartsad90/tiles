@@ -242,6 +242,24 @@ button:hover {
   background-color: gold;
 }
 
+.message-panel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 24em;
+  max-height: 4em;
+  padding: 20px 14px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border: 4px solid rgba(0, 54, 134);
+  outline: 2px solid rgba(0, 54, 134);
+  outline-offset: -8px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.2s
+}
 
 
 
