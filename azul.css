@@ -42,7 +42,12 @@ button:hover {
 
 .player-playmat-container {
   padding: .5em;
-  border: outset 6px rgb(31, 84, 153);
+  border: 6px solid rgba(0, 54, 134);
+  outline: 2px solid rgba(0, 54, 134);
+  outline-offset: -8px;
+  border-radius: 8px;
+  margin-right: 10px;
+
 }
 
 .player-is-active {
@@ -239,7 +244,7 @@ button:hover {
 }
 
 .player-is-winner {
-  background-color: gold;
+  box-shadow: inset 0px 0px 50px 10px rgba(215, 182, 0, 0.8) !important;
 }
 
 .message-panel {
