@@ -631,13 +631,7 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
 //[x]set the correct activePLayer for rendering after starting a new round
 //[x]: add two additional conditions: full row and mosaic tile occupied
 
-// After creating a new round and determining the first player,
-// activePlayer changes correctly, but remains unchanged until the end of the round.
-//? Is the button programmed while rendering and therefore is only programmed
-//? when rendered? => posible solution: rerender the button after each turn resolves?
-
   dehighlightPossibleRows();
-  console.log('highlightPossibleRows(pickedTiles, activePlayer, playerData), activePlayer: ', activePlayer);
 
   let possibleRowsArray = [];
   (console.log``)
@@ -655,6 +649,9 @@ export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
 
   playerData[activePlayer][0].pickedRows.forEach((row) => {
     let rowNum = playerData[activePlayer][0].pickedRows.indexOf(row);
+    
+    //[] refactoring: declare isColorInMosaicRowFilled as a boolean returned from a function
+    
     let isColorInMosaicRowFilled;
     
     playerData[activePlayer][2].mosaicArray[rowNum].

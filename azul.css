@@ -1,5 +1,6 @@
 div {
-/* background: rgb(0, 100, 0, 0.2); */
+  /** uncomment to see boxes*/
+  /* background: rgb(0, 100, 0, 0.2); */
 }
 
 body {
@@ -7,7 +8,27 @@ body {
   font-family: amarante;
   color: rgba(0, 54, 134);
   background: rgb(240, 239, 232);
+}
 
+button {
+  font-size: 24px;
+  font-family: amarante;
+  color: rgba(0, 54, 134);
+  padding: 10px 14px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  background-color: white;
+  border: 4px solid rgba(0, 54, 134);
+  outline: 2px solid rgba(0, 54, 134);
+  outline-offset: -8px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+  transition: background-color 0.2s
+}
+
+button:hover {
+  background-color: rgb(233, 242, 255);;
 }
 
 .picked-rows-mosaic-container {
@@ -216,10 +237,6 @@ body {
 .is-possible-row {
   background-color: rgba(84, 218, 0, 0.444);
 }
-
-
-
-
 
 .player-is-winner {
   background-color: gold;
