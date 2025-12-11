@@ -1,7 +1,16 @@
-  let playerCount = 2;
-  
-  for (let player = 0; player < playerCount; player++) {
-    console.log('player: ', player);
-  }
+let workshop = [
+  "blank", 
+  "blank", 
+  "blank", 
+  "blank" 
+]
 
-  console.log('end');
+const tileIsBlank = (tile) => (tile === 'blank');
+
+
+
+console.log(workshop);
+
+workshop.every(tileIsBlank);
+
+console.log(workshop.every(tileIsBlank));

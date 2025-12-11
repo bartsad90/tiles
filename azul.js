@@ -1,9 +1,42 @@
-import {tileBag, allTileColors, createNewTileBag, pickTileFromBag, checkOutCount, fillWorkshops, currentWorkshop} from '/scripts/tileBag.js';
-import {workshopArray, createWorkshopNumber, moveWorkshopsToDiscard, renderWorkshops} from '/scripts/workshops.js';
-import { renderPickedTiles } from './scripts/pickedTiles.js';
-import { renderMosaicGrid, createMosaicArray , moveTilesToMosaic, generateNewMosaicArray, checkIfFinalRound, countFilledColumns, countFilledRows, countCompleteColors} from './scripts/mosaic.js';
-import { renderPickedRows, findFirstBlank, generateBlankPickedRows, putTilesIntoPickedRowsArray, checkPickedRowsStatus, discardFullPickedRows } from './scripts/pickedRows.js';
-import { renderNegPointBar, generateBlankNegPointTiles, countNegPoints } from './scripts/negPointsBar.js';
+import {
+  tileBag,
+  allTileColors,
+  createNewTileBag,
+  pickTileFromBag,
+  checkOutCount,
+  fillWorkshops,
+  currentWorkshop,
+} from "/scripts/tileBag.js";
+import {
+  workshopArray,
+  createWorkshopNumber,
+  moveWorkshopsToDiscard,
+  renderWorkshops,
+} from "/scripts/workshops.js";
+import { renderPickedTiles } from "./scripts/pickedTiles.js";
+import {
+  renderMosaicGrid,
+  createMosaicArray,
+  moveTilesToMosaic,
+  generateNewMosaicArray,
+  checkIfFinalRound,
+  countFilledColumns,
+  countFilledRows,
+  countCompleteColors,
+} from "./scripts/mosaic.js";
+import {
+  renderPickedRows,
+  findFirstBlank,
+  generateBlankPickedRows,
+  putTilesIntoPickedRowsArray,
+  checkPickedRowsStatus,
+  discardFullPickedRows,
+} from "./scripts/pickedRows.js";
+import {
+  renderNegPointBar,
+  generateBlankNegPointTiles,
+  countNegPoints,
+} from "./scripts/negPointsBar.js";
 
 let activePlayer = 0;
 export const playerCount = 2;
@@ -16,29 +49,22 @@ let playerPoints1 = 0;
 let playerPoints2 = 0;
 let playerPoints3 = 0;
 let playerPoints4 = 0;
-let pointsInRound = '-';
-let negPoints = '-';
-let isFinalRound = false
+let pointsInRound = "-";
+let negPoints = "-";
+let isFinalRound = false;
 
 //places separate objects into the array in order to avoid nesting arrays
 //if imported, PickedTiles activates a read-only error
 
-const tileColorClasses = [
-    'black',
-    'blue',
-    'yellow',
-    'red',
-    'white'
-]
-
+const tileColorClasses = ["black", "blue", "yellow", "red", "white"];
 
 //TODO: write a constructor for playerData subarrays/objects
 //TODO: rewrite playerData as an object
-//TODO: rewrite functions w/ playerData as a param to access playerDataSets without array indeces  
+//TODO: rewrite functions w/ playerData as a param to access playerDataSets without array indeces
 
-//* For future reference: 
+//* For future reference:
 //* playerData[activePlayer][0] === pickedRows:
-//    stores tiles picked by the player during a contemporary round 
+//    stores tiles picked by the player during a contemporary round
 //    in order to create pickedRowsStatus and resolve the round
 //* playerData[activePlayer][1] === negPointTiles:
 //    stores extraneous picked tiles which later convert into negative points
@@ -47,17 +73,17 @@ const tileColorClasses = [
 //    and to determine playerPoints
 //* playerData[activePlayer][3] === pickedRowsStatus:
 //    is an array booleans, where the index represents a pickedRow.
-//    True describes a complete pickedRow ready for transfer into the mosaic and the discardBox 
+//    True describes a complete pickedRow ready for transfer into the mosaic and the discardBox
 //    False denotes an incomplete pickedRow, where tiles remain for the next round
-//    For example:  
-//    `pickedRowsStatus[0] === true` 
-//    describes the first picked row as full 
+//    For example:
+//    `pickedRowsStatus[0] === true`
+//    describes the first picked row as full
 //* playerData[activePlayer][4] === playerPoints:
 //    updates for the active player with the 'end round' button
 //    and at the end of the game when bonusPoints are counted
 //* playerData[activePlayer][5] === bonusPoints:
-//    stores information on how many times the player has met conditions for bonusPoints. 
-//    The points are counted and added before determining the winningPlayer 
+//    stores information on how many times the player has met conditions for bonusPoints.
+//    The points are counted and added before determining the winningPlayer
 //    to maintain score clarity.
 
 let pickedRow0 = [];
@@ -84,36 +110,24 @@ let pickedRow17 = [];
 let pickedRow18 = [];
 let pickedRow19 = [];
 
-let pickedRows1 = [
-  pickedRow0,
-  pickedRow1,
-  pickedRow2,
-  pickedRow3,
-  pickedRow4
-];
+let pickedRows1 = [pickedRow0, pickedRow1, pickedRow2, pickedRow3, pickedRow4];
 
-let pickedRows2 = [
- pickedRow5,
- pickedRow6, 
- pickedRow7, 
- pickedRow8, 
- pickedRow9, 
-];
+let pickedRows2 = [pickedRow5, pickedRow6, pickedRow7, pickedRow8, pickedRow9];
 
 let pickedRows3 = [
   pickedRow10,
   pickedRow11,
   pickedRow12,
   pickedRow13,
-  pickedRow14
+  pickedRow14,
 ];
 
 let pickedRows4 = [
- pickedRow15,
- pickedRow16, 
- pickedRow17, 
- pickedRow18, 
- pickedRow19, 
+  pickedRow15,
+  pickedRow16,
+  pickedRow17,
+  pickedRow18,
+  pickedRow19,
 ];
 
 let negPointTiles1 = [];
@@ -133,18 +147,17 @@ let pickedRowsStatus2 = [];
 let pickedRowsStatus3 = [];
 let pickedRowsStatus4 = [];
 
-
 let player1Data = [
   { pickedRows: pickedRows1 },
   { negPointTiles: negPointTiles1 },
   { mosaicArray: mosaicArray1 },
-  { pickedRowsStatus: pickedRowsStatus1},
-  { playerPoints: playerPoints1},
+  { pickedRowsStatus: pickedRowsStatus1 },
+  { playerPoints: playerPoints1 },
   {
-  rows: [], 
-  columns: [],
-  colors: []
-  }
+    rows: [],
+    columns: [],
+    colors: [],
+  },
 ];
 
 let player2Data = [
@@ -152,12 +165,12 @@ let player2Data = [
   { negPointTiles: negPointTiles2 },
   { mosaicArray: mosaicArray2 },
   { pickedRowsStatus: pickedRowsStatus2 },
-  { playerPoints: playerPoints2},
+  { playerPoints: playerPoints2 },
   {
-  rows: [], 
-  columns: [],
-  colors: []
-  }
+    rows: [],
+    columns: [],
+    colors: [],
+  },
 ];
 
 let player3Data = [
@@ -165,77 +178,142 @@ let player3Data = [
   { negPointTiles: negPointTiles3 },
   { mosaicArray: mosaicArray3 },
   { pickedRowsStatus: pickedRowsStatus3 },
-  { playerPoints: playerPoints3},
+  { playerPoints: playerPoints3 },
   {
-  rows: [], 
-  columns: [],
-  colors: []
-  }
-]
+    rows: [],
+    columns: [],
+    colors: [],
+  },
+];
 
 let player4Data = [
   { pickedRows: pickedRows4 },
   { negPointTiles: negPointTiles4 },
   { mosaicArray: mosaicArray4 },
   { pickedRowsStatus: pickedRowsStatus4 },
-  { playerPoints: playerPoints4},
+  { playerPoints: playerPoints4 },
   {
-  rows: [], 
-  columns: [],
-  colors: []
-  }
-]
-
-let playerData = [
-  player1Data,
-  player2Data,
-  player3Data,
-  player4Data
+    rows: [],
+    columns: [],
+    colors: [],
+  },
 ];
 
+let playerData = [player1Data, player2Data, player3Data, player4Data];
 
-document.querySelector('.js-end-round-button').
-addEventListener('click', () => {
-  console.log(`Round end, activePlayer: ${activePlayer}`)
+export function renderCountScoreButton(activePlayer, playerData, isFinalRound) {
+  let isRoundFinished = checkIfRoundFinished();
+  console.log("isRoundFinished: ", isRoundFinished);
 
-  updatePickedRowsStatus();
-  let pointsInRound = moveTilesToMosaic(playerData, activePlayer, playerData[activePlayer][2].mosaicArray);  
-  renderMosaicGrid(playerData, activePlayer);
-  negPoints = countNegPoints(playerData, activePlayer);
-  playerData[activePlayer][4].playerPoints += pointsInRound + negPoints;
-  console.log(`Points this round: ${pointsInRound}`);
-  console.log('Negative points this round: ', negPoints)
-  console.log('Total points: ', playerData[activePlayer][4].playerPoints);
-  renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
-  renderPlayerScore(pointsInRound, playerData[activePlayer][4].playerPoints, negPoints, activePlayer, playerData);
-  isFinalRound = checkIfFinalRound(activePlayer, playerData, isFinalRound);
+  if (!isRoundFinished) {
+    document
+      .querySelector(".js-count-score-button")
+      .classList.add("button-inactive");
+  } else {
+    document
+      .querySelector(".js-count-score-button")
+      .classList.remove("button-inactive");
 
-  countFilledRows(activePlayer, playerData);
-  countCompleteColors(activePlayer, tileColorClasses, playerData);
-  console.log(`Round ended for player: ${activePlayer}`);
-  activePlayer = switchActivePlayer(activePlayer, playerCount);
-  highlightActivePlayerMat(activePlayer);
+    document
+      .querySelector(".js-count-score-button")
+      .addEventListener("click", () => {
+        console.log(`Round end, activePlayer: ${activePlayer}`);
 
-  displayMessage(`Player ${activePlayer}: Points this round: ${pointsInRound}, Negative points this round: ${negPoints},  Total points: ${playerData[activePlayer][4].playerPoints}`)
+        updatePickedRowsStatus();
+        let pointsInRound = moveTilesToMosaic(
+          playerData,
+          activePlayer,
+          playerData[activePlayer][2].mosaicArray
+        );
+        renderMosaicGrid(playerData, activePlayer);
+        negPoints = countNegPoints(playerData, activePlayer);
+        playerData[activePlayer][4].playerPoints += pointsInRound + negPoints;
+        console.log(`Points this round: ${pointsInRound}`);
+        console.log("Negative points this round: ", negPoints);
+        console.log("Total points: ", playerData[activePlayer][4].playerPoints);
+        renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
+        renderPlayerScore(
+          pointsInRound,
+          playerData[activePlayer][4].playerPoints,
+          negPoints,
+          activePlayer,
+          playerData
+        );
+        isFinalRound = checkIfFinalRound(
+          activePlayer,
+          playerData,
+          isFinalRound
+        );
 
-  if (isFinalRound) {
-    document.querySelector('.js-new-round-button')
-    .innerHTML = 'Count final scores'
-    displayMessage(`Player ${activePlayer}:
-      <br>Points this round: ${pointsInRound}
-      <br> Negative points this round: ${negPoints}
-      <br>  Total points: ${playerData[activePlayer][4].playerPoints}.
-      <br>You have complete a column. This is the <strong>final round</strong>!`)
+        countFilledRows(activePlayer, playerData);
+        countCompleteColors(activePlayer, tileColorClasses, playerData);
+        console.log(`Round ended for player: ${activePlayer}`);
+        activePlayer = switchActivePlayer(activePlayer, playerCount);
+        highlightActivePlayerMat(activePlayer);
+
+        displayMessage(
+          `Player ${activePlayer}: Points this round: ${pointsInRound}, Negative points this round: ${negPoints},  Total points: ${playerData[activePlayer][4].playerPoints}`
+        );
+
+        if (isFinalRound) {
+          document.querySelector(".js-new-round-button").innerHTML =
+            "Count final scores";
+          displayMessage(`Player ${activePlayer}:
+          <br>Points this round: ${pointsInRound}
+          <br> Negative points this round: ${negPoints}
+          <br>  Total points: ${playerData[activePlayer][4].playerPoints}.
+          <br>You have complete a column. This is the <strong>final round</strong>!`);
+        }
+      });
   }
-});
+}
 
+function checkIfRoundFinished() {
+  let areWorkshopsEmpty;
+  let arePickedTilesEmpty;
+  let isCenterTableEmpty;
+
+  const tileIsBlank = (tile) => tile === "blank";
+
+  let emptyWorkshops = 0;
+
+  workshopArray.forEach((workshop) => {
+    console.log("workshop.every(tileIsBlank): ", workshop.every(tileIsBlank));
+    console.log("workshopArray: ", workshopArray);
+    console.log("workshop: ", workshop);
+    if (workshop.every(tileIsBlank)) {
+      emptyWorkshops++;
+      console.log("emptyWorkshops: ", emptyWorkshops);
+    }
+  });
+
+  emptyWorkshops === workshopCount
+    ? (areWorkshopsEmpty = true)
+    : (areWorkshopsEmpty = false);
+  console.log("areWorkshopsEmpty: ", areWorkshopsEmpty);
+
+  pickedTiles.length === 0
+    ? (arePickedTilesEmpty = true)
+    : (arePickedTilesEmpty = false);
+  console.log("pickedTiles.length: ", pickedTiles.length);
+
+  centerTable.length === 0
+    ? (isCenterTableEmpty = true)
+    : (arePickedTilesEmpty = false);
+  console.log("centerTable.length: ", centerTable.length);
+
+  if (areWorkshopsEmpty && arePickedTilesEmpty && isCenterTableEmpty) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 //* To make sure that there is no error when starting a new round:
 //    - all players must have made at least one full move
 //    - one of the players must have picked the first-player tile
 
-document.querySelector('.js-new-round-button').
-addEventListener('click', () => {
+document.querySelector(".js-new-round-button").addEventListener("click", () => {
   if (isFinalRound) {
     countFinalScores(playerData);
     winner = determineWinner(playerCount, playerData);
@@ -243,76 +321,82 @@ addEventListener('click', () => {
 
     displayMessage(`Player ${winner} wins! 
       <br>Total score of ${playerData[winner][4].playerPoints}.
-      <br><b>Congratulations</b>`)
-
+      <br><b>Congratulations</b>`);
   } else {
+    console.log("New round started", playerData);
 
-  console.log('New round started', playerData);
+    workshopArray.forEach((row) => {
+      row.forEach((tile) => {
+        moveToDiscardBox(tile);
+      });
+      row.splice(0, row.length);
+    });
+    fillWorkshops(workshopCount);
+    renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
+    renderActivePlayer(activePlayer);
+    activePlayer = chooseFirstPlayer(isFinalRound, playerData);
 
-  workshopArray.forEach((row) => {
-    row.forEach((tile) => {
-      moveToDiscardBox(tile);
-  })
-    row.splice(0, row.length);
-  })
-  fillWorkshops(workshopCount);
-  renderWorkshops(pickedTiles, centerTable, activePlayer, playerData);
-  renderActivePlayer(activePlayer);
-  activePlayer = chooseFirstPlayer(isFinalRound, playerData);
+    for (let player = 0; player < playerCount; player++) {
+      //let playerDataSet = playerData[player];
+      console.log("Clearing player mat for player: ", player);
+      discardFullPickedRows(discardBox, player, playerData);
+      moveNegPointsTilesToDiscard(player, playerData);
+      renderNegPointBar(playerData, player);
+      let pickedRowsStatus = playerData[player][2].pickedRowsStatus;
+      console.log(`pickedRowsStatus for player ${player}`, pickedRowsStatus);
+      renderPickedRows(pickedTiles, rowNumber, player, playerData);
+      console.log(
+        "pointsInRound: ",
+        pointsInRound,
+        "playerData[4].playerPoints: ",
+        playerData[player][4].playerPoints
+      );
+      renderPlayerScore(0, playerData[player][4].playerPoints, 0, player);
+    }
 
-  for (let player = 0; player < playerCount; player++) {
-    //let playerDataSet = playerData[player];
-    console.log('Clearing player mat for player: ', player);
-    discardFullPickedRows(discardBox, player, playerData);
-    moveNegPointsTilesToDiscard(player, playerData);
-    renderNegPointBar(playerData, player);
-    let pickedRowsStatus = playerData[player][2].pickedRowsStatus;
-    console.log(`pickedRowsStatus for player ${player}`, pickedRowsStatus);
-    renderPickedRows(pickedTiles, rowNumber, player, playerData);
-    console.log('pointsInRound: ',pointsInRound, 'playerData[4].playerPoints: ', playerData[player][4].playerPoints);
-    renderPlayerScore(0, playerData[player][4].playerPoints, 0, player);
+    renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
+    removeBlanksFrom(discardBox);
+    console.log("discardBox: ", discardBox);
+    pickedTiles.splice(0, pickedTiles.length);
+    console.log(`picked tiles cleared, pickedTiles: `, pickedTiles);
+    centerTable.splice(0, centerTable.length, {
+      id: "firstPlayer",
+      tileColor: "first-player",
+    });
+    console.log(`centerTable reset. centerTable: `, centerTable);
+    renderCenterTable(centerTable, pickedTiles);
+    pointsInRound = "-";
+    negPoints = "-";
+    console.log("hasFirstTile: ", hasFirstTile);
+    renderActivePlayer(activePlayer);
+    highlightActivePlayerMat(activePlayer);
+    console.log("activePlayer: ", activePlayer);
+    renderShowPossibleRowsButton(
+      pickedTiles,
+      activePlayer,
+      playerCount,
+      playerData
+    );
   }
-  
-  renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
-  removeBlanksFrom(discardBox);
-  console.log('discardBox: ', discardBox);
-  pickedTiles.splice(0, pickedTiles.length);
-  console.log(`picked tiles cleared, pickedTiles: `, pickedTiles)
-  centerTable.splice(0, centerTable.length, {id: 'firstPlayer', tileColor: 'first-player'});
-  console.log(`centerTable reset. centerTable: `, centerTable);
-  renderCenterTable(centerTable, pickedTiles);
-  pointsInRound = '-';
-  negPoints = '-';
-  console.log('hasFirstTile: ', hasFirstTile)
-  renderActivePlayer(activePlayer);
-  highlightActivePlayerMat(activePlayer);
-  console.log('activePlayer: ',activePlayer)
-  renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData);
-  } 
 });
 
-document.querySelector('.js-end-turn').
-addEventListener('click', () => {
-activePlayer = switchActivePlayer(activePlayer, playerCount);
-displayMessage(`New turn: player ${activePlayer}`);
-})
+document.querySelector(".js-end-turn").addEventListener("click", () => {
+  activePlayer = switchActivePlayer(activePlayer, playerCount);
+  displayMessage(`New turn: player ${activePlayer}`);
+});
 
 let discardBox = [];
 
-let newMosaicTemplate = [
-  'blue',
-  'yellow',
-  'red',
-  'black', 
-  'white'
-];
+let newMosaicTemplate = ["blue", "yellow", "red", "black", "white"];
 
 mosaicArray = generateNewMosaicArray(newMosaicTemplate, mosaicArray);
 
-export let centerTable = [{
-  id: 'firstPlayer',
-  tileColor: 'first-player'
-}];
+export let centerTable = [
+  {
+    id: "firstPlayer",
+    tileColor: "first-player",
+  },
+];
 
 export let pickedTiles = [];
 
@@ -332,20 +416,20 @@ generatePlayerMatts(playerCount);
 
 // generateBlankNegPointTiles() creates 7 blank tiles and pushes them into the array. To avoid generating n7 tiles, it is called only once outside the loop.
 playerData.forEach((playerDataSet) => {
-  generateBlankNegPointTiles(playerDataSet[1]);   //playerData[1] === negPointTiles 
+  generateBlankNegPointTiles(playerDataSet[1]); //playerData[1] === negPointTiles
   generateNewMosaicArray(newMosaicTemplate, playerDataSet[2].mosaicArray);
-}) 
+});
 
-for(activePlayer = 0; activePlayer < playerCount; activePlayer++) {
-renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
+for (activePlayer = 0; activePlayer < playerCount; activePlayer++) {
+  renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
 
-renderMosaicGrid(playerData, activePlayer);
+  renderMosaicGrid(playerData, activePlayer);
 
-renderNegPointBar(playerData, activePlayer);
+  renderNegPointBar(playerData, activePlayer);
 
-initializePlayerScoresHTML(activePlayer, playerData);
+  initializePlayerScoresHTML(activePlayer, playerData);
 
-renderPlayerScore(pointsInRound, playerPoints, negPoints, activePlayer);
+  renderPlayerScore(pointsInRound, playerPoints, negPoints, activePlayer);
 }
 
 activePlayer = 0;
@@ -355,33 +439,64 @@ renderActivePlayer(activePlayer);
 
 highlightActivePlayerMat(activePlayer);
 
-renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData);
+renderCountScoreButton(activePlayer, playerData, isFinalRound);
 
-displayMessage(`New game begins. Player ${activePlayer}, pick tiles from workshops`)
+renderShowPossibleRowsButton(
+  pickedTiles,
+  activePlayer,
+  playerCount,
+  playerData
+);
+
+displayMessage(
+  `New game begins. Player ${activePlayer}, pick tiles from workshops`
+);
 
 export function refillTileBag(outCount) {
   if (outCount === 100) {
     discardBox.forEach((tile) => {
-    tileBag.splice(tile.tileId, 1, tile);
-    })
-    console.log(`discardBox moved to tileBag. tileBag: `, tileBag, 'discardBox: ', discardBox);
+      tileBag.splice(tile.tileId, 1, tile);
+    });
+    console.log(
+      `discardBox moved to tileBag. tileBag: `,
+      tileBag,
+      "discardBox: ",
+      discardBox
+    );
   }
 }
 
-function renderPlayerScore(pointsInRound, playerPoints, negPoints, activePlayer) { 
-  console.log('Rendering scores for player: ', activePlayer, ';', pointsInRound, playerPoints, negPoints, activePlayer);
-  document.querySelector(`.player${activePlayer}-total-score`).innerHTML = playerPoints;
-  document.querySelector(`.player${activePlayer}-score-this-round`).innerHTML = `${pointsInRound}, penalty: ${negPoints}`;
-  document.querySelector(`.js-player${activePlayer}-bonus-score-container`).innerHTML = 
-     `<p>Bonus points: </p>
+function renderPlayerScore(
+  pointsInRound,
+  playerPoints,
+  negPoints,
+  activePlayer
+) {
+  console.log(
+    "Rendering scores for player: ",
+    activePlayer,
+    ";",
+    pointsInRound,
+    playerPoints,
+    negPoints,
+    activePlayer
+  );
+  document.querySelector(`.player${activePlayer}-total-score`).innerHTML =
+    playerPoints;
+  document.querySelector(
+    `.player${activePlayer}-score-this-round`
+  ).innerHTML = `${pointsInRound}, penalty: ${negPoints}`;
+  document.querySelector(
+    `.js-player${activePlayer}-bonus-score-container`
+  ).innerHTML = `<p>Bonus points: </p>
       <div class="player${activePlayer}-bonus-score">
       <p>Complete rows: ${playerData[activePlayer][5].rows.length} x 2pts</p>
       <p>Complete columns: ${playerData[activePlayer][5].columns.length} x 7pts</p>
-      <p>Complete colors: ${playerData[activePlayer][5].colors.length} x 10pts</p>`
+      <p>Complete colors: ${playerData[activePlayer][5].colors.length} x 10pts</p>`;
 }
 
 function initializePlayerScoresHTML(activePlayer, playerData) {
-  document.querySelector(`.js-player${activePlayer}-scores`).innerHTML =`
+  document.querySelector(`.js-player${activePlayer}-scores`).innerHTML = `
     <div class="player${activePlayer}-total-score-container js-player${activePlayer}-total-score-container">
       <p>Total score: </p>
       <div class="player${activePlayer}-total-score">
@@ -399,31 +514,31 @@ function initializePlayerScoresHTML(activePlayer, playerData) {
       Complete columns: ${playerData[activePlayer][5].columns.length} x 7pts
       Complete colors: ${playerData[activePlayer][5].colors.length} x 10pts
       </div>
-    </div>`
-    
+    </div>`;
 }
 
 export function renderCenterTable(centerTable, pickedTiles) {
-  let innerHTML = '';
+  let innerHTML = "";
   centerTable.forEach((tile) => {
     innerHTML += `<div class="tile center-table-tile center-table-tile-${tile.tileColor} tile-${tile.tileColor}">
     <img class="tile-image" src="../images/tile-${tile.tileColor}.png"></div>
-    </div>`
-  })
-  document.querySelector('.js-table-center-container').innerHTML = innerHTML;
+    </div>`;
+  });
+  document.querySelector(".js-table-center-container").innerHTML = innerHTML;
 
-  document.querySelectorAll('.center-table-tile').
-  forEach((tile) => {
+  document.querySelectorAll(".center-table-tile").forEach((tile) => {
     let tileColor;
     tileColorClasses.forEach((color) => {
       if (tile.classList.contains(`tile-${color}`)) {
         tileColor = color;
-        }
       }
-    )
-    
-    tile.addEventListener('click', () => {
-      if (tile.classList.contains('tile-is-same-color') || tile.classList.contains('tile-first-player')) {
+    });
+
+    tile.addEventListener("click", () => {
+      if (
+        tile.classList.contains("tile-is-same-color") ||
+        tile.classList.contains("tile-first-player")
+      ) {
         console.log(`Picked from table center: ${tileColor}`);
       }
 
@@ -431,90 +546,95 @@ export function renderCenterTable(centerTable, pickedTiles) {
       let firstPlayerPicked;
 
       centerTable.forEach((centerTableTile) => {
-
-        if (centerTableTile.tileColor === 'first-player') {
+        if (centerTableTile.tileColor === "first-player") {
           firstPlayerPicked = true;
-          console.log('first player tile chosen');
+          console.log("first player tile chosen");
           console.log(centerTable[0]);
         }
         if (centerTableTile.tileColor === tileColor) {
           pickedTiles.push(centerTableTile);
-          console.log(`Center table: `, centerTable);      
+          console.log(`Center table: `, centerTable);
           indecesToDelete.push(centerTable.indexOf(centerTableTile));
 
           if (firstPlayerPicked === true) {
-            console.log('moving first tile to picked tiles.', centerTable[0])
+            console.log("moving first tile to picked tiles.", centerTable[0]);
             pickedTiles.push(centerTable[0]);
-            indecesToDelete.splice(0, 0, 0) //enters 0 at index 0 of the array to prevent later array.reverse from reindexing
+            indecesToDelete.splice(0, 0, 0); //enters 0 at index 0 of the array to prevent later array.reverse from reindexing
             firstPlayerPicked = false;
           }
 
           renderPickedTiles(pickedTiles);
-        }  
-      })
-      console.log('indecesToDelete', indecesToDelete)
+        }
+      });
+      console.log("indecesToDelete", indecesToDelete);
       indecesToDelete.reverse().forEach((index) => {
-      centerTable.splice(index, 1);
-      renderCenterTable(centerTable, pickedTiles);
-      })      
-    }
-   )
-  })
-
+        centerTable.splice(index, 1);
+        renderCenterTable(centerTable, pickedTiles);
+      });
+    });
+  });
 
   //adds listeners for mouseover effects
   allTileColors.forEach((color) => {
-    
-      document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => {
-        tile.addEventListener('mouseover', () => {
-          document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => {
-            tile.classList.add('tile-is-same-color');
-          })
-        })
-      })
-        document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => { 
-          tile.addEventListener('mouseout', () => {
-          document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => {
-          tile.classList.remove('tile-is-same-color');
-        })
+    document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => {
+      tile.addEventListener("mouseover", () => {
+        document
+          .querySelectorAll(`.center-table-tile-${color}`)
+          .forEach((tile) => {
+            tile.classList.add("tile-is-same-color");
+          });
       });
-    })
-  })
+    });
+    document.querySelectorAll(`.center-table-tile-${color}`).forEach((tile) => {
+      tile.addEventListener("mouseout", () => {
+        document
+          .querySelectorAll(`.center-table-tile-${color}`)
+          .forEach((tile) => {
+            tile.classList.remove("tile-is-same-color");
+          });
+      });
+    });
+  });
 }
 
 function moveNegPointsTilesToDiscard(player, playerData) {
   let indecesToDelete = [];
   let negPointTiles = playerData[player][1].negPointTiles;
   negPointTiles.forEach((tile) => {
-    if (tile.tileId !== 'firstPlayer' && tile.tileColor !== 'blank') {
+    if (tile.tileId !== "firstPlayer" && tile.tileColor !== "blank") {
       moveToDiscardBox(tile);
-      console.log('Moved tile from negPointsTiles to discardBox. Tile: ', tile)
+      console.log("Moved tile from negPointsTiles to discardBox. Tile: ", tile);
       indecesToDelete.push(negPointTiles.indexOf(tile));
-      console.log('Indeces to delete from negPointTiles: ', indecesToDelete)
-      console.log('Moved negPointsTiles to discardBox: ', discardBox)
+      console.log("Indeces to delete from negPointTiles: ", indecesToDelete);
+      console.log("Moved negPointsTiles to discardBox: ", discardBox);
     }
-  })
-  indecesToDelete.reverse().forEach(index => negPointTiles.splice(index, 1, {id: `neg${index}`, tileColor: 'blank'}));
-  console.log('negPointTiles after discard: ', negPointTiles);
+  });
+  indecesToDelete
+    .reverse()
+    .forEach((index) =>
+      negPointTiles.splice(index, 1, { id: `neg${index}`, tileColor: "blank" })
+    );
+  console.log("negPointTiles after discard: ", negPointTiles);
 }
 
 export function moveToDiscardBox(tile) {
   if (tile.tileId >= 0 || tile.tileId < 100) {
     discardBox.push(tile);
-    console.log(`tile ${tile.tileId} (${tile.tileColor}) moved to discardBox`)
+    console.log(`tile ${tile.tileId} (${tile.tileColor}) moved to discardBox`);
   }
-  console.log('currentWorkshop: ', currentWorkshop);
+  console.log("currentWorkshop: ", currentWorkshop);
 }
 
 function generatePlayerMatts(playerCount) {
   for (activePlayer = 0; activePlayer < playerCount; activePlayer++) {
-    document.querySelector('.js-players-area').innerHTML += generatePlayerMattHTML(activePlayer);
+    document.querySelector(".js-players-area").innerHTML +=
+      generatePlayerMattHTML(activePlayer);
   }
   activePlayer = 0;
 }
 
 function generatePlayerMattHTML(activePlayer) {
-  let innerHTML = '';
+  let innerHTML = "";
   innerHTML = `
   <div class="player-playmat-container player${activePlayer}-playmat-container">
     <div class="picked-rows-mosaic-container player${activePlayer}-picked-rows-mosaic-container">
@@ -537,54 +657,70 @@ function generatePlayerMattHTML(activePlayer) {
 export function removeBlanksFrom(array) {
   let indecesToDelete = [];
   array.forEach((tile) => {
-    if (tile === 'blank' || tile.tileColor === 'blank') {
+    if (tile === "blank" || tile.tileColor === "blank") {
       indecesToDelete.push(array.indexOf(tile));
     }
-  })
+  });
   indecesToDelete = indecesToDelete.reverse();
-  console.log(`Indeces of blanks to delete from named array: `, indecesToDelete);
-    indecesToDelete.forEach((index) => {
-      array.splice(index, 1)
-    })
+  console.log(
+    `Indeces of blanks to delete from named array: `,
+    indecesToDelete
+  );
+  indecesToDelete.forEach((index) => {
+    array.splice(index, 1);
+  });
 }
 
 export function moveDiscardBoxToTileBag() {
   discardBox.forEach((tile) => {
     tileBag.splice(tile.tileId, 1, tile);
-    console.log(`Tile ${tile.tileId} (${tile.tileColor}) from discardBox returned to the tileBag`)
-  })
-  discardBox.splice(0, discardBox.length);   //clears the discardBox at the end
-  console.log('discardBox cleared. discardBox: ', discardBox, 'tileBag: ', tileBag);
+    console.log(
+      `Tile ${tile.tileId} (${tile.tileColor}) from discardBox returned to the tileBag`
+    );
+  });
+  discardBox.splice(0, discardBox.length); //clears the discardBox at the end
+  console.log(
+    "discardBox cleared. discardBox: ",
+    discardBox,
+    "tileBag: ",
+    tileBag
+  );
 }
 
 function updatePickedRowsStatus() {
   let pickedRowsStatus = checkPickedRowsStatus(activePlayer, playerData);
-  
+
   console.log(`pickedRowsStatus: `, pickedRowsStatus);
   playerData[activePlayer].splice(3, 1, pickedRowsStatus);
-  console.log('pickedRowsStatus: ', pickedRowsStatus);
+  console.log("pickedRowsStatus: ", pickedRowsStatus);
 }
 
 function renderActivePlayer(activePlayer) {
-  document.querySelector('.js-active-player-container').innerHTML = `Active player: ${activePlayer}`
+  document.querySelector(
+    ".js-active-player-container"
+  ).innerHTML = `Active player: ${activePlayer}`;
 }
 
 function highlightActivePlayerMat(activePlayer) {
-  document.querySelectorAll(`.player-playmat-container`).
-forEach((playmat) => {
-  if (playmat.classList.contains('player-is-active'))  {
-    playmat.classList.remove('player-is-active')}
-})
+  document.querySelectorAll(`.player-playmat-container`).forEach((playmat) => {
+    if (playmat.classList.contains("player-is-active")) {
+      playmat.classList.remove("player-is-active");
+    }
+  });
 
-console.log(activePlayer);
-document.querySelector(`.player${activePlayer}-playmat-container`).classList.add('player-is-active');
-};
+  console.log(activePlayer);
+  document
+    .querySelector(`.player${activePlayer}-playmat-container`)
+    .classList.add("player-is-active");
+}
 
 export function switchActivePlayer(activePlayer, playerCount) {
-  console.log(`switchActivePlayer(activePlayer: ${activePlayer}, playerCount: ${playerCount}`);
+  console.log(
+    `switchActivePlayer(activePlayer: ${activePlayer}, playerCount: ${playerCount}`
+  );
   activePlayer++;
 
-  if (activePlayer > playerCount-1) {
+  if (activePlayer > playerCount - 1) {
     console.log(activePlayer);
     activePlayer = 0;
   }
@@ -593,125 +729,159 @@ export function switchActivePlayer(activePlayer, playerCount) {
 
   renderActivePlayer(activePlayer);
 
-  console.log(`Player ${activePlayer} starts the turn.`)
+  console.log(`Player ${activePlayer} starts the turn.`);
   return activePlayer;
 }
 
 function chooseFirstPlayer(isFInalRound, playerData) {
   let firstNextRound;
-    playerData.forEach((playerDataSet) => {
-      console.log(`Searching for first player tile in player ${playerData.indexOf(playerDataSet)} negPointTiles`, playerData)
-      playerDataSet[1].negPointTiles.forEach((tile) => {
-        if (tile.tileColor === 'first-player' && !isFInalRound) {
-          firstNextRound = playerData.indexOf(playerDataSet);
-          console.log(`Player ${firstNextRound} has the first player tile and begins the next round.`)
-        }
-      })
-     })
-    return firstNextRound;
-  }
-
-export function displayMessage(message) {
-  document.querySelector('.js-message-panel').innerHTML = `${message}`
+  playerData.forEach((playerDataSet) => {
+    console.log(
+      `Searching for first player tile in player ${playerData.indexOf(
+        playerDataSet
+      )} negPointTiles`,
+      playerData
+    );
+    playerDataSet[1].negPointTiles.forEach((tile) => {
+      if (tile.tileColor === "first-player" && !isFInalRound) {
+        firstNextRound = playerData.indexOf(playerDataSet);
+        console.log(
+          `Player ${firstNextRound} has the first player tile and begins the next round.`
+        );
+      }
+    });
+  });
+  return firstNextRound;
 }
 
-export function renderShowPossibleRowsButton(pickedTiles, activePlayer, playerCount, playerData) {
-  console.log(`renderShowPossibleRowsButton(pickedTiles, activePlayer, playerData), activePlayer: `, activePlayer);
-  document.querySelector('.js-show-possible').addEventListener('click', () => {
+export function displayMessage(message) {
+  document.querySelector(".js-message-panel").innerHTML = `${message}`;
+}
+
+export function renderShowPossibleRowsButton(
+  pickedTiles,
+  activePlayer,
+  playerCount,
+  playerData
+) {
+  console.log(
+    `renderShowPossibleRowsButton(pickedTiles, activePlayer, playerData), activePlayer: `,
+    activePlayer
+  );
+  document.querySelector(".js-show-possible").addEventListener("click", () => {
     highlightPossibleRows(pickedTiles, activePlayer, playerData);
-  })
+  });
 
   if (activePlayer === 0) {
-    console.log('removing eventListener from js-show-possible for playerCount-1: ', playerCount-1); 
-    // playerCount has to be decreased by 1 to denote last player, because activePlayer provides index to a 0-indexed array 
-    document.querySelector('.js-show-possible').removeEventListener('click', () => {
-      highlightPossibleRows(pickedTiles, playerCount, playerData);
-    })
+    console.log(
+      "removing eventListener from js-show-possible for playerCount-1: ",
+      playerCount - 1
+    );
+    // playerCount has to be decreased by 1 to denote last player, because activePlayer provides index to a 0-indexed array
+    document
+      .querySelector(".js-show-possible")
+      .removeEventListener("click", () => {
+        highlightPossibleRows(pickedTiles, playerCount, playerData);
+      });
   } else {
-    console.log('removing eventListener from js-show-possible for activePlayer-1: ', activePlayer-1);
-    document.querySelector('.js-show-possible').removeEventListener('click', () => {
-      highlightPossibleRows(pickedTiles, activePlayer-1, playerData);
-  })
+    console.log(
+      "removing eventListener from js-show-possible for activePlayer-1: ",
+      activePlayer - 1
+    );
+    document
+      .querySelector(".js-show-possible")
+      .removeEventListener("click", () => {
+        highlightPossibleRows(pickedTiles, activePlayer - 1, playerData);
+      });
   }
 }
 
 export function highlightPossibleRows(pickedTiles, activePlayer, playerData) {
-
-//[x] make the function get activePlayer other than === 0; 
-//[x]: remove event listeners for previous players 
-//[x]: unhighlight previous player's possible rows
-//[x]: renderShowPossibleRowsButton at the beginning of the game
-//[x]set the correct activePLayer for rendering after starting a new round
-//[x]: add two additional conditions: full row and mosaic tile occupied
+  //[x] make the function get activePlayer other than === 0;
+  //[x]: remove event listeners for previous players
+  //[x]: unhighlight previous player's possible rows
+  //[x]: renderShowPossibleRowsButton at the beginning of the game
+  //[x]set the correct activePLayer for rendering after starting a new round
+  //[x]: add two additional conditions: full row and mosaic tile occupied
 
   dehighlightPossibleRows();
 
   let possibleRowsArray = [];
-  (console.log``)
-  if (possibleRowsArray.length > 0) {
-    possibleRowsArray.splice(0, possibleRowsArray.length)
-  }
-  let pickedTilesColor;
-  pickedTiles.forEach((tile) => {
-    if (tile.tileColor !== 'first-player') {
-      pickedTilesColor = tile.tileColor;
-    }
-  })
 
-  console.log('highlightPossibleRows. playerData[activePlayer]: ', playerData, 'activePlayer: ', activePlayer)
+  const pickedTilesColor = pickedTiles.find(
+    (tile) => tile.hasTileColor !== "first-player"
+  ).tileColor;
+
+  console.log(
+    "highlightPossibleRows. playerData[activePlayer]: ",
+    playerData,
+    "activePlayer: ",
+    activePlayer
+  );
 
   playerData[activePlayer][0].pickedRows.forEach((row) => {
     let rowNum = playerData[activePlayer][0].pickedRows.indexOf(row);
-    
+
     //[] refactoring: declare isColorInMosaicRowFilled as a boolean returned from a function
-    
+
     let isColorInMosaicRowFilled;
-    
-    playerData[activePlayer][2].mosaicArray[rowNum].
-    forEach((mosaicTile) => {
-      if (mosaicTile.isFilled && mosaicTile.tileColor === pickedTilesColor) { 
+
+    playerData[activePlayer][2].mosaicArray[rowNum].forEach((mosaicTile) => {
+      if (mosaicTile.isFilled && mosaicTile.tileColor === pickedTilesColor) {
         isColorInMosaicRowFilled = true;
         return;
-    }})
+      }
+    });
 
-    console.log('isColorInMosaicRowFilled: ', isColorInMosaicRowFilled);
-    ;
+    console.log("isColorInMosaicRowFilled: ", isColorInMosaicRowFilled);
     if (pickedTiles === undefined || pickedTiles.length === 0) {
-      console.log('No picked tiles')
-      return
+      console.log("No picked tiles");
+      return;
     }
-    if (row.forEach((tile) => {tile.tileColor !== 'blank'})) {
-      console.log(`Row: ${rowNum}: All tiles in row occupied`)
-    } 
-    else if (isColorInMosaicRowFilled) {
-      console.log('isColorInMosaicRowFilled: ', isColorInMosaicRowFilled);
-    }
-    else if (row[0].tileColor === 'blank' || row[0].tileColor === pickedTilesColor) 
-    {
-      possibleRowsArray.push(rowNum)
+    if (
+      row.forEach((tile) => {
+        tile.tileColor !== "blank";
+      })
+    ) {
+      console.log(`Row: ${rowNum}: All tiles in row occupied`);
+    } else if (isColorInMosaicRowFilled) {
+      console.log("isColorInMosaicRowFilled: ", isColorInMosaicRowFilled);
+    } else if (
+      row[0].tileColor === "blank" ||
+      row[0].tileColor === pickedTilesColor
+    ) {
+      possibleRowsArray.push(rowNum);
 
-      console.log(`Row ${rowNum} empty or containing color ${pickedTilesColor}, row[0].tileColor: `, row[0].tileColor);
-      
-      console.log("row.tileColor === 'blank': ", row[0].tileColor === 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor)
-     } 
-    else {
-      console.log(`Row ${rowNum} not possible: row[0].tileColor === 'blank': `, row[0].tileColor === 'blank', "row[0].tileColor !== pickedTilesColor: ", row[0].tileColor !== pickedTilesColor, "row[0].tileColor: ", row[0].tileColor)
+      console.log(
+        `Row ${rowNum} empty or containing color ${pickedTilesColor}, row[0].tileColor: `,
+        row[0].tileColor
+      );
+    } else {
+      console.log(
+        `Row ${rowNum} not possible: row[0].tileColor === 'blank': `,
+        row[0].tileColor === "blank",
+        "row[0].tileColor !== pickedTilesColor: ",
+        row[0].tileColor !== pickedTilesColor,
+        "row[0].tileColor: ",
+        row[0].tileColor
+      );
     }
-})
+  });
 
-  console.log('possibleRowsArray: ', possibleRowsArray)
+  console.log("possibleRowsArray: ", possibleRowsArray);
 
   possibleRowsArray.forEach((rowNum) => {
-    document.querySelector(`.js-player${activePlayer}-picked-tile-row-${rowNum}`).classList.add('is-possible-row')
-  })
+    document
+      .querySelector(`.js-player${activePlayer}-picked-tile-row-${rowNum}`)
+      .classList.add("is-possible-row");
+  });
 }
 
 export function dehighlightPossibleRows() {
-  console.log('dehighlightPossibleRows');
-  document.querySelectorAll('.is-possible-row').
-  forEach((row) => {
-    row.classList.remove('is-possible-row')
-  })
+  console.log("dehighlightPossibleRows");
+  document.querySelectorAll(".is-possible-row").forEach((row) => {
+    row.classList.remove("is-possible-row");
+  });
 }
 
 function countFinalScores(playerData) {
@@ -719,32 +889,58 @@ function countFinalScores(playerData) {
     const scoreRows = player[5].rows.length * 2;
     const scoreColumns = player[5].columns.length * 7;
     const scoreColors = player[5].colors.length * 10;
-    console.log(`player ${playerData.indexOf(player)} scoreRows, scoreColumns, scoreColors: `, scoreRows, scoreColumns, scoreColors);
+    console.log(
+      `player ${playerData.indexOf(
+        player
+      )} scoreRows, scoreColumns, scoreColors: `,
+      scoreRows,
+      scoreColumns,
+      scoreColors
+    );
     console.log(scoreRows);
     console.log(scoreColumns);
     console.log(scoreColors);
     console.log(`bonus points total: `, scoreRows + scoreColumns + scoreColors);
-    console.log('player[4].playerPoints: ', player[4].playerPoints);
-    console.log('player[4].playerPoints + scoreColumns: ', player[4].playerPoints + scoreColumns);
-    console.log('player[4].playerPoints + bonus points: ', player[4].playerPoints + scoreRows + scoreColumns + scoreColors);
-    
-    player[4].playerPoints = player[4].playerPoints + scoreRows + scoreColumns + scoreColors;
-    console.log('player[4].playerPoints after counting: ', player[4].playerPoints)
+    console.log("player[4].playerPoints: ", player[4].playerPoints);
+    console.log(
+      "player[4].playerPoints + scoreColumns: ",
+      player[4].playerPoints + scoreColumns
+    );
+    console.log(
+      "player[4].playerPoints + bonus points: ",
+      player[4].playerPoints + scoreRows + scoreColumns + scoreColors
+    );
 
-    console.log(`Player ${playerData.indexOf(player)} final score: ${player[4].playerPoints}`)
-  })
+    player[4].playerPoints =
+      player[4].playerPoints + scoreRows + scoreColumns + scoreColors;
+    console.log(
+      "player[4].playerPoints after counting: ",
+      player[4].playerPoints
+    );
+
+    console.log(
+      `Player ${playerData.indexOf(player)} final score: ${
+        player[4].playerPoints
+      }`
+    );
+  });
 }
 
-
 function determineWinner(playerCount, playerData) {
-  console.log('determineWinner')
+  console.log("determineWinner");
   let winner = 0;
   let highestScore = playerData[0][4].playerPoints;
   let contenderScore;
-  for (let player = 1; player < playerCount; player++) 
-    //starts at one in order to skip the iteration for the default winner: player 0
-    { 
-    console.log(`Comparing player ${player} to current winner: player ${winner}. contenderScore: `, contenderScore);
+  for (
+    let player = 1;
+    player < playerCount;
+    player++
+  ) //starts at one in order to skip the iteration for the default winner: player 0
+  {
+    console.log(
+      `Comparing player ${player} to current winner: player ${winner}. contenderScore: `,
+      contenderScore
+    );
     contenderScore = playerData[player][4].playerPoints;
     if (contenderScore > highestScore) {
       highestScore = contenderScore;
@@ -756,6 +952,7 @@ function determineWinner(playerCount, playerData) {
 }
 
 function highlightWinner(winner) {
-  document.querySelector(`.player${winner}-playmat-container`).classList.add('player-is-winner')
+  document
+    .querySelector(`.player${winner}-playmat-container`)
+    .classList.add("player-is-winner");
 }
-

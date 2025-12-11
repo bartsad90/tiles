@@ -33,6 +33,10 @@ button:hover {
   background-color: rgb(233, 242, 255);;
 }
 
+.button-inactive {
+  opacity: 0.5;
+}
+
 .show-possible-button {
   font-size: 1em;
   padding: 0;
@@ -289,6 +293,4 @@ button:hover {
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
   transition: background-color 0.2s
 }
-
-
 
