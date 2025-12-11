@@ -201,114 +201,6 @@ let player4Data = [
 
 let playerData = [player1Data, player2Data, player3Data, player4Data];
 
-export function renderCountScoreButton(activePlayer, playerData, isFinalRound) {
-  let isRoundFinished = checkIfRoundFinished();
-  console.log("isRoundFinished: ", isRoundFinished);
-
-  if (!isRoundFinished) {
-    document
-      .querySelector(".js-count-score-button")
-      .classList.add("button-inactive");
-  } else {
-    document
-      .querySelector(".js-count-score-button")
-      .classList.remove("button-inactive");
-
-    document
-      .querySelector(".js-count-score-button")
-      .addEventListener("click", () => {
-        console.log(`Round end, activePlayer: ${activePlayer}`);
-
-        updatePickedRowsStatus();
-        let pointsInRound = moveTilesToMosaic(
-          playerData,
-          activePlayer,
-          playerData[activePlayer][2].mosaicArray
-        );
-        renderMosaicGrid(playerData, activePlayer);
-        negPoints = countNegPoints(playerData, activePlayer);
-        playerData[activePlayer][4].playerPoints += pointsInRound + negPoints;
-        console.log(`Points this round: ${pointsInRound}`);
-        console.log("Negative points this round: ", negPoints);
-        console.log("Total points: ", playerData[activePlayer][4].playerPoints);
-        renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
-        renderPlayerScore(
-          pointsInRound,
-          playerData[activePlayer][4].playerPoints,
-          negPoints,
-          activePlayer,
-          playerData
-        );
-        isFinalRound = checkIfFinalRound(
-          activePlayer,
-          playerData,
-          isFinalRound
-        );
-
-        countFilledRows(activePlayer, playerData);
-        countCompleteColors(activePlayer, tileColorClasses, playerData);
-        console.log(`Round ended for player: ${activePlayer}`);
-        activePlayer = switchActivePlayer(activePlayer, playerCount);
-        highlightActivePlayerMat(activePlayer);
-
-        displayMessage(
-          `Player ${activePlayer}: Points this round: ${pointsInRound}, Negative points this round: ${negPoints},  Total points: ${playerData[activePlayer][4].playerPoints}`
-        );
-
-        if (isFinalRound) {
-          document.querySelector(".js-new-round-button").innerHTML =
-            "Count final scores";
-          displayMessage(`Player ${activePlayer}:
-          <br>Points this round: ${pointsInRound}
-          <br> Negative points this round: ${negPoints}
-          <br>  Total points: ${playerData[activePlayer][4].playerPoints}.
-          <br>You have complete a column. This is the <strong>final round</strong>!`);
-        }
-      });
-  }
-}
-
-function checkIfRoundFinished() {
-  let areWorkshopsEmpty;
-  let arePickedTilesEmpty;
-  let isCenterTableEmpty;
-
-  const tileIsBlank = (tile) => tile === "blank";
-
-  let emptyWorkshops = 0;
-
-  workshopArray.forEach((workshop) => {
-    console.log("workshop.every(tileIsBlank): ", workshop.every(tileIsBlank));
-    console.log("workshopArray: ", workshopArray);
-    console.log("workshop: ", workshop);
-    if (workshop.every(tileIsBlank)) {
-      emptyWorkshops++;
-      console.log("emptyWorkshops: ", emptyWorkshops);
-    }
-  });
-
-  emptyWorkshops === workshopCount
-    ? (areWorkshopsEmpty = true)
-    : (areWorkshopsEmpty = false);
-  console.log("areWorkshopsEmpty: ", areWorkshopsEmpty);
-
-  pickedTiles.length === 0
-    ? (arePickedTilesEmpty = true)
-    : (arePickedTilesEmpty = false);
-  console.log("pickedTiles.length: ", pickedTiles.length);
-
-  centerTable.length === 0
-    ? (isCenterTableEmpty = true)
-    : (arePickedTilesEmpty = false);
-  console.log("centerTable.length: ", centerTable.length);
-
-  if (areWorkshopsEmpty && arePickedTilesEmpty && isCenterTableEmpty) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 //* To make sure that there is no error when starting a new round:
 //    - all players must have made at least one full move
 //    - one of the players must have picked the first-player tile
@@ -687,7 +579,8 @@ export function moveDiscardBoxToTileBag() {
   );
 }
 
-function updatePickedRowsStatus() {
+function updatePickedRowsStatus(activePlayer, playerData) {
+  console.log('updatePickedRowsStatus()')
   let pickedRowsStatus = checkPickedRowsStatus(activePlayer, playerData);
 
   console.log(`pickedRowsStatus: `, pickedRowsStatus);
@@ -955,4 +848,112 @@ function highlightWinner(winner) {
   document
     .querySelector(`.player${winner}-playmat-container`)
     .classList.add("player-is-winner");
+}
+
+export function renderCountScoreButton(activePlayer, playerData, isFinalRound) {
+  let isRoundFinished = checkIfRoundFinished();
+  console.log("isRoundFinished: ", isRoundFinished);
+
+  if (!isRoundFinished) {
+    document
+      .querySelector(".js-count-score-button")
+      .classList.add("button-inactive");
+  } else {
+    document
+      .querySelector(".js-count-score-button")
+      .classList.remove("button-inactive");
+
+    document
+      .querySelector(".js-count-score-button")
+      .addEventListener("click", () => {
+        console.log(`Round end, activePlayer: ${activePlayer}`);
+
+        updatePickedRowsStatus(activePlayer, playerData);
+        let pointsInRound = moveTilesToMosaic(
+          playerData,
+          activePlayer,
+          playerData[activePlayer][2].mosaicArray
+        );
+        renderMosaicGrid(playerData, activePlayer);
+        negPoints = countNegPoints(playerData, activePlayer);
+        playerData[activePlayer][4].playerPoints += pointsInRound + negPoints;
+        console.log(`Points this round: ${pointsInRound}`);
+        console.log("Negative points this round: ", negPoints);
+        console.log("Total points: ", playerData[activePlayer][4].playerPoints);
+        renderPickedRows(pickedTiles, rowNumber, activePlayer, playerData);
+        renderPlayerScore(
+          pointsInRound,
+          playerData[activePlayer][4].playerPoints,
+          negPoints,
+          activePlayer,
+          playerData
+        );
+        isFinalRound = checkIfFinalRound(
+          activePlayer,
+          playerData,
+          isFinalRound
+        );
+
+        countFilledRows(activePlayer, playerData);
+        countCompleteColors(activePlayer, tileColorClasses, playerData);
+        console.log(`Round ended for player: ${activePlayer}`);
+        activePlayer = switchActivePlayer(activePlayer, playerCount);
+        highlightActivePlayerMat(activePlayer);
+
+        displayMessage(
+          `Player ${activePlayer}: Points this round: ${pointsInRound}, Negative points this round: ${negPoints},  Total points: ${playerData[activePlayer][4].playerPoints}`
+        );
+
+        if (isFinalRound) {
+          document.querySelector(".js-new-round-button").innerHTML =
+            "Count final scores";
+          displayMessage(`Player ${activePlayer}:
+          <br>Points this round: ${pointsInRound}
+          <br> Negative points this round: ${negPoints}
+          <br>  Total points: ${playerData[activePlayer][4].playerPoints}.
+          <br>You have complete a column. This is the <strong>final round</strong>!`);
+        }
+      });
+  }
+}
+
+function checkIfRoundFinished() {
+  let areWorkshopsEmpty;
+  let arePickedTilesEmpty;
+  let isCenterTableEmpty;
+
+  const tileIsBlank = (tile) => tile === "blank";
+
+  let emptyWorkshops = 0;
+
+  workshopArray.forEach((workshop) => {
+    console.log("workshop.every(tileIsBlank): ", workshop.every(tileIsBlank));
+    console.log("workshopArray: ", workshopArray);
+    console.log("workshop: ", workshop);
+    if (workshop.every(tileIsBlank)) {
+      emptyWorkshops++;
+      console.log("emptyWorkshops: ", emptyWorkshops);
+    }
+  });
+
+  emptyWorkshops === workshopCount
+    ? (areWorkshopsEmpty = true)
+    : (areWorkshopsEmpty = false);
+  console.log("areWorkshopsEmpty: ", areWorkshopsEmpty);
+
+  pickedTiles.length === 0
+    ? (arePickedTilesEmpty = true)
+    : (arePickedTilesEmpty = false);
+  console.log("pickedTiles.length: ", pickedTiles.length);
+
+  centerTable.length === 0
+    ? (isCenterTableEmpty = true)
+    : (arePickedTilesEmpty = false);
+  console.log("centerTable.length: ", centerTable.length);
+
+  if (areWorkshopsEmpty && arePickedTilesEmpty && isCenterTableEmpty) {
+    return true;
+  } else {
+    return false;
+  }
 }

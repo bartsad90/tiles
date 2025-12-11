@@ -266,6 +266,7 @@ export function generateBlankPickedRows(playerCount, playerData) {
 }
 
 export function checkPickedRowsStatus(activePlayer, playerData) {
+  console.log('checkPickedRowsStatus(activePlayer :', activePlayer, 'playerData: ', playerData);
   let pickedRowsStatus = [];
   let rowCap = 1;
   playerData[activePlayer][0].pickedRows.forEach((row) => {
